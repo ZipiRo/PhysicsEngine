@@ -8,10 +8,10 @@
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 
-int FPS = 120;
+int FPS = 60;
 
 Plain::LinkedList<Plain::Body*> bodyList;
-int bodyC = 20;
+int bodyC = 10;
 
 void Start();
 void Update(float delta);
@@ -60,7 +60,7 @@ int main()
         std::chrono::duration<float> fpsElapsedTime = fpsCurrentTime - fpsTimer;
         if (fpsElapsedTime.count() >= 1.0f)
         {
-            std::cout << "FramesPerSecond: " << (int)(1 / drawTime) << " fps" << '\n';
+            std::cout << "FramesPerSecond: " << (int)(1.0f / drawTime) << " fps" << '\n';
             std::cout << "DrawTime: " << drawTime * 1000.0f << " ms" << '\n';
             std::cout << std::endl;
             frameCount = 0;
@@ -86,11 +86,11 @@ void Start()
 
         if(shapeType == Plain::RectangleShape)
         {
-            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Red, sf::Color::White, false);
+            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
         }
         else if(shapeType == Plain::CircleShape)
         {
-            body = new Plain::Circle(10.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Red, sf::Color::White, false);
+            body = new Plain::Circle(10.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
         }
 
         if(body != NULL) bodyList.insert(body);
@@ -100,10 +100,11 @@ void Start()
 void Update(float delta)
 {
     // Update Things
+    
     for(int i = 0; i < bodyC; i++)
         if(bodyList[i] != NULL) {
-            bodyList[i]->Move(Plain::Vector2D(0, 9.81f) * delta);
-            bodyList[i]->Rotate(20 * delta);
+            bodyList[i]->Move(Plain::Vector2D(0.0f, 9.81f) * delta);
+            bodyList[i]->Rotate(20.0f * delta);
         }
 }
 

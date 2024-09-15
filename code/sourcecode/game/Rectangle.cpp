@@ -29,6 +29,7 @@ namespace Plain{
         this->type = RectangleShape;
 
         this->rectangle = sf::RectangleShape(sf::Vector2f(width, height));
+        this->rectangle.setOrigin(sf::Vector2f(width / 2, height / 2));
     }
 
     void Rectangle::Draw(sf::RenderWindow& window)

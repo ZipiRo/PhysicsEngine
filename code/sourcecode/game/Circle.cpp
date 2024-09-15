@@ -29,6 +29,7 @@ namespace Plain
         this->type = CircleShape;
 
 		this->circle = sf::CircleShape(this->radius);
+        this->circle.setOrigin(sf::Vector2f(this->radius, this->radius));
     }
 
     void Circle::Draw(sf::RenderWindow& window)

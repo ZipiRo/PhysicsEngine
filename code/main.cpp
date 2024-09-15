@@ -69,6 +69,11 @@ int main()
 
 void Start()
 {
+    sf::Vector2f a;
+    Plain::Vector2D b = Plain::Vector2D(10, 10);
+    a = Plain::Vector2DtosfmlVector2D(b);
+
+    std::cout << 'x' << a.x << ' ' << 'y' << a.y;
     // Start Things
 }
 

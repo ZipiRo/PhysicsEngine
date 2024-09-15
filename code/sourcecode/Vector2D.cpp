@@ -1,3 +1,4 @@
+#include <SFML/System/Vector2.hpp>
 #include <cmath>
 
 #include "Vector2D.h"
@@ -93,11 +94,11 @@ namespace Plain
     }
 
     
-    // Plain::Vector2D sfmlVector2DtoVector2D(sf::Vector2f v){
-    //     return Plain::Vector2D(v.x, v.y);
-    // }
+    Plain::Vector2D sfmlVector2DtoVector2D(sf::Vector2f v){
+        return Plain::Vector2D(v.x, v.y);
+    }
 
-    // sf::Vector2f Vector2DtosfmlVector2D(Plain::Vector2D v){
-    //     return sf::Vector2f(v.x, v.y);
-    // }
+    sf::Vector2f Vector2DtosfmlVector2D(Plain::Vector2D v){
+        return sf::Vector2f(v.x, v.y);
+    }
 }

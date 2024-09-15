@@ -1,3 +1,5 @@
+#include <SFML/System/Vector3.hpp>
+
 #include "Vector3D.h"
 
 namespace Plain
@@ -73,11 +75,11 @@ namespace Plain
         return Plain::Vector3D(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 
-    // Plain::Vector2D sfmlVector2DtoVector2D(sf::Vector2f v){
-    //     return Plain::Vector2D(v.x, v.y);
-    // }
+    Plain::Vector3D sfmlVector3DtoVector3D(sf::Vector3f v){
+        return Plain::Vector3D(v.x, v.y, v.z);
+    }
 
-    // sf::Vector2f Vector2DtosfmlVector2D(Plain::Vector2D v){
-    //     return sf::Vector2f(v.x, v.y);
-    // }
+    sf::Vector3f Vector3DtosfmlVector3D(Plain::Vector3D v){
+        return sf::Vector3f(v.x, v.y, v.z);
+    }
 }

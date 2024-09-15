@@ -21,6 +21,6 @@ namespace Plain{
     Vector3D multipyVector3D(Vector3D, Vector3D);
     Vector3D divideVector3D(Vector3D, Vector3D);
 
-    // Plain::Vector2D sfmlVector2DtoVector2D(sf::Vector2f v)
-    // sf::Vector2f Vector2DtosfmlVector2D(Plain::Vector2D v)
+    Plain::Vector3D sfmlVector3DtoVector3D(sf::Vector3f);
+    sf::Vector3f Vector3DtosfmlVector3D(Plain::Vector3D);
 }

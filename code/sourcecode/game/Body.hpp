@@ -1,7 +1,8 @@
 namespace Plain{
     enum{
         RectangleShape,
-        CircleShape
+        CircleShape,
+        Polygon
     };
 
     class Body

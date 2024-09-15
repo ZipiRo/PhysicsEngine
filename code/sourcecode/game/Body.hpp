@@ -8,6 +8,8 @@ namespace Plain{
     {
         public:
             Body();
+            
+		    virtual void Draw(sf::RenderWindow&) = 0;
 
             Vector2D position;
             Vector2D linearVelocity;
@@ -30,6 +32,7 @@ namespace Plain{
             sf::Color outlineColor;
 
             int type;
+            
         private:
     };
 }

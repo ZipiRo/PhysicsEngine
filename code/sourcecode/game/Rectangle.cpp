@@ -1,3 +1,4 @@
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <Vector2D.hpp>
@@ -26,5 +27,16 @@ namespace Plain{
         this->isStatic = isStatic;
 
         this->type = RectangleShape;
+    }
+
+    void Rectangle::Draw(sf::RenderWindow& window)
+    {
+        this->rectangle.setPosition(Vector2DtosfmlVector2D(this->position));
+        this->rectangle.setRotation(this->angle);
+        this->rectangle.setFillColor(this->fillColor);
+        this->rectangle.setOutlineColor(this->outlineColor);
+        this->rectangle.setOutlineThickness(1);
+
+        window.draw(this->rectangle);
     }
 }

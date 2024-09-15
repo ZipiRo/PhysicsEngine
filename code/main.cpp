@@ -81,7 +81,7 @@ void Draw()
 {
     // DrawThings
 
-    window.clear();
+    window.clear(sf::Color::White);
     window.display();
 }
 

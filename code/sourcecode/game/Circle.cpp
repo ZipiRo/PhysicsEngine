@@ -1,3 +1,4 @@
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <Vector2D.hpp>
@@ -26,5 +27,16 @@ namespace Plain
         this->isStatic = isStatic;
 
         this->type = CircleShape;
+    }
+
+    void Circle::Draw(sf::RenderWindow& window) 
+    {
+        this->circle.setPosition(Vector2DtosfmlVector2D(this->position));
+        this->circle.setRotation(this->angle);
+        this->circle.setFillColor(this->fillColor);
+        this->circle.setOutlineColor(this->outlineColor);
+        this->circle.setOutlineThickness(1);
+
+        window.draw(this->circle);
     }
 }

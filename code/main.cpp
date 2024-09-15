@@ -8,10 +8,10 @@
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 
-int FPS = 60;
+int FPS = 120;
 
 Plain::LinkedList<Plain::Body*> bodyList;
-int bodyC = 10;
+int bodyC = 50;
 
 void Start();
 void Update(float delta);
@@ -73,11 +73,13 @@ int main()
 
 void Start()
 {
+    // Initialize Things
+
     srand(time(0));
  
     for(int i = 0; i < bodyC; i++)
     {
-        int shapeType = i % 2;
+        int shapeType = 1;
 
         Plain::Body *body = NULL;
 
@@ -90,7 +92,7 @@ void Start()
         }
         else if(shapeType == Plain::CircleShape)
         {
-            body = new Plain::Circle(10.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
+            body = new Plain::Circle(20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
         }
 
         if(body != NULL) bodyList.insert(body);
@@ -101,11 +103,41 @@ void Update(float delta)
 {
     // Update Things
     
-    for(int i = 0; i < bodyC; i++)
-        if(bodyList[i] != NULL) {
-            bodyList[i]->Move(Plain::Vector2D(0.0f, 9.81f) * delta);
-            bodyList[i]->Rotate(20.0f * delta);
+    Plain::Vector2D direction;
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        direction = Plain::Vector2D(0, -1);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        direction = Plain::Vector2D(0, 1);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        direction = Plain::Vector2D(-1, 0);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        direction = Plain::Vector2D(1, 0);
+
+    if(direction.x != 0 || direction.y != 0)
+    {
+        direction = Plain::Normalize(direction);
+        Plain::Vector2D velocity = direction * 200.0f * delta;
+
+        bodyList[0]->Move(velocity);
+    }
+
+    for(int i = 0; i < bodyList.length() - 1; i++)
+    {
+        Plain::Body *bodyA = bodyList[i];
+
+        for(int j = i + 1; j < bodyList.length(); j++)
+        {
+            Plain::Body *bodyB = bodyList[j];
+            
+            Plain::Vector2D normal; float depth;
+            if(Plain::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+            {
+                bodyA->Move((normal * -1.0f) * depth / 2.0f);
+                bodyB->Move(normal * depth / 2.0f);
+            }
         }
+    }
 }
 
 void Draw()

@@ -73,27 +73,27 @@ namespace Plain
         return Vector2D(a.x / b.x, a.y / b.y);
     }
 
-    float length(Vector2D v){
+    float Length(Vector2D v){
         return sqrt(v.x * v.x + v.y * v.y);
     }
 
-    float distance(Vector2D a, Vector2D b){
+    float Distance(Vector2D a, Vector2D b){
         float dx = a.x - b.x;
         float dy = a.y - b.y;
 
         return sqrt(dx * dx + dy * dy);
     }
 
-    Vector2D normalize(Vector2D v){
-        float len = length(v);
+    Vector2D Normalize(Vector2D v){
+        float len = Length(v);
         return Vector2D(v.x / len, v.y / len);
     }
 
-    float dotProduct(Vector2D a, Vector2D b){
+    float DotProduct(Vector2D a, Vector2D b){
         return a.x * b.x + a.y * b.y;
     }
 
-    float crossProduct(Vector2D a, Vector2D b){
+    float CrossProduct(Vector2D a, Vector2D b){
         return a.x * b.y - a.y * b.x;
     }
 

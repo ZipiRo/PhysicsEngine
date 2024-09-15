@@ -8,7 +8,7 @@ create:
 	createlibrary_game.bat
 
 link:
-	g++ *.o -o build/PhysicsEngine -Lsrc/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -Lplain -lplain -Lgame -lgame
+	g++ *.o -o build/PhysicsEngine -Lsrc/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -Llib\plain -lplain -Llib\game -lgame
 
 clean:
 	del main.o

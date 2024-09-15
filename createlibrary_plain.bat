@@ -5,7 +5,7 @@ rem Source directory containing .cpp files
 set SOURCE_DIR=code\sourcecode\plain
 
 rem Output directory for object files
-set OUTPUT_DIR=plain
+set OUTPUT_DIR=lib\plain
 set STATIC_LIB=libplain.a
 
 rem Create the output directory if it doesn't exist

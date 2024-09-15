@@ -16,6 +16,7 @@ namespace Plain
         Vector2D operator/ (float);
         Vector2D operator*= (float);
         Vector2D operator/= (float);
+        Vector2D Zero();
     };
 
     Vector2D multipyVector2D(Vector2D, Vector2D);

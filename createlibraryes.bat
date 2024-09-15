@@ -2,7 +2,7 @@
 setlocal
 
 echo -----------------------------------------
-echo Buildin plain library...
+echo Building plain library...
 rem Source directory containing .cpp files
 set SOURCE_DIR=code\sourcecode\plain
 
@@ -46,7 +46,7 @@ if "%COMPILATION_SUCCESSFUL%"=="false" (
 echo Done.
 echo -----------------------------------------
 
-echo Buildin game library...
+echo Building game library...
 rem Source directory containing .cpp files
 set SOURCE_DIR=code\sourcecode\game
 

@@ -6,7 +6,7 @@
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 
-int FPS = 120;
+int FPS = 60;
 
 void Start();
 void Update(float delta);

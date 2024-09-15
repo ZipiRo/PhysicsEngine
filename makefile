@@ -4,8 +4,7 @@ compile:
 	g++ -Isrc/include -c code/*.cpp
 
 create: 
-	createlibrary_plain.bat
-	createlibrary_game.bat
+	createlibraryes.bat
 
 link:
 	g++ *.o -o build/PhysicsEngine -Llib\plain -lplain -Llib\game -lgame -Lsrc/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d 

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-#include "sourcecode\Vector2D.h"
+#include "sourcecode\Plain\Plain.hpp"
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 
@@ -69,11 +69,6 @@ int main()
 
 void Start()
 {
-    sf::Vector2f a;
-    Plain::Vector2D b = Plain::Vector2D(10, 10);
-    a = Plain::Vector2DtosfmlVector2D(b);
-
-    std::cout << 'x' << a.x << ' ' << 'y' << a.y;
     // Start Things
 }
 

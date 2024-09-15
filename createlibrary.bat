@@ -2,7 +2,7 @@
 setlocal
 
 rem Source directory containing .cpp files
-set SOURCE_DIR=code\sourcecode
+set SOURCE_DIR=code\sourcecode\plain
 
 rem Output directory for object files
 set OUTPUT_DIR=plain

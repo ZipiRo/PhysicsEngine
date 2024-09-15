@@ -14,7 +14,7 @@ if not exist %OUTPUT_DIR% mkdir %OUTPUT_DIR%
 rem Compile all .cpp files in the source directory into .o files
 for %%f in ("%SOURCE_DIR%\*.cpp") do (
     echo Compiling %%~nxf...
-    g++ -c "%%f" -o "%OUTPUT_DIR%\%%~nf.o" -Isrc\include -Icode\sourcecode\plain
+    g++ -c "%%f" -o "%OUTPUT_DIR%\%%~nf.o" -Isrc\include -Icode\sourcecode\plain 
     if errorlevel 1 (
         echo Compilation of %%~nxf failed.
         set COMPILATION_SUCCESSFUL=false

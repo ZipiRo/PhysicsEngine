@@ -1,9 +1,9 @@
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <Vector2D.hpp>
-#include "Body.hpp"
 
+#include "Body.hpp"
 #include "Rectangle.hpp"
 
 namespace Plain{
@@ -27,6 +27,8 @@ namespace Plain{
         this->isStatic = isStatic;
 
         this->type = RectangleShape;
+
+        this->rectangle = sf::RectangleShape(sf::Vector2f(width, height));
     }
 
     void Rectangle::Draw(sf::RenderWindow& window)

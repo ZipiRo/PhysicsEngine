@@ -1,10 +1,12 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 #include <Vector2D.hpp>
 
 #include "Body.hpp"
 
 namespace Plain{
     Body::Body () {}
+
+    void Body::Move(Vector2D amount){
+		this->position += amount;
+    }
 }

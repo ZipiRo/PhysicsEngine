@@ -1,9 +1,9 @@
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <Vector2D.hpp>
-#include "Body.hpp"
 
+#include "Body.hpp"
 #include "Circle.hpp"
 
 namespace Plain
@@ -27,9 +27,11 @@ namespace Plain
         this->isStatic = isStatic;
 
         this->type = CircleShape;
+
+		this->circle = sf::CircleShape(this->radius);
     }
 
-    void Circle::Draw(sf::RenderWindow& window) 
+    void Circle::Draw(sf::RenderWindow& window)
     {
         this->circle.setPosition(Vector2DtosfmlVector2D(this->position));
         this->circle.setRotation(this->angle);

@@ -5,22 +5,22 @@ namespace Plain{
 
         Vector3D();
 
-        Vector3D(float, float, float);
+        Vector3D(float x, float y, float z);
 
-        Vector3D operator= (Vector3D);
-        Vector3D operator+ (Vector3D);
-        Vector3D operator- (Vector3D);
-        Vector3D operator+= (Vector3D);
-        Vector3D operator-= (Vector3D);
-        Vector3D operator* (float);
-        Vector3D operator/ (float);
-        Vector3D operator*= (float);
-        Vector3D operator/= (float);
+        Vector3D operator= (Vector3D b);
+        Vector3D operator+ (Vector3D b);
+        Vector3D operator- (Vector3D b);
+        Vector3D operator+= (Vector3D b);
+        Vector3D operator-= (Vector3D b);
+        Vector3D operator* (float scalar);
+        Vector3D operator/ (float scalar);
+        Vector3D operator*= (float scalar);
+        Vector3D operator/= (float scalar);
     };
 
-    Vector3D multipyVector3D(Vector3D, Vector3D);
-    Vector3D divideVector3D(Vector3D, Vector3D);
+    Vector3D multipyVector3D(Vector3D a, Vector3D b);
+    Vector3D divideVector3D(Vector3D a, Vector3D b);
 
-    Plain::Vector3D sfmlVector3DtoVector3D(sf::Vector3f);
-    sf::Vector3f Vector3DtosfmlVector3D(Plain::Vector3D);
+    Plain::Vector3D sfmlVector3DtoVector3D(sf::Vector3f v);
+    sf::Vector3f Vector3DtosfmlVector3D(Plain::Vector3D v);
 }

@@ -1,5 +1,5 @@
 @echo off
  
-mingw32-make -f  makefile
+mingw32-make -f makefile
 
 start build/PhysicsEngine.exe 

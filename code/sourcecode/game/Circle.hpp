@@ -2,7 +2,7 @@ namespace Plain{
     class Circle : public Body
     {
         public:
-            Circle(float, Vector2D, float, float, sf::Color, sf::Color, bool);
+            Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
 
             void Draw(sf::RenderWindow&) override;
 

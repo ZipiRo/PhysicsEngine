@@ -1,12 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <chrono>
+#include <random>
 
-#include "sourcecode\Plain\Plain.hpp"
+#include "sourcecode/plain/Plain.hpp"
+#include "sourcecode/game/Game.hpp"
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 
-int FPS = 60;
+int FPS = 120;
+
+Plain::LinkedList<Plain::Body*> bodyList;
+int bodyC = 20;
 
 void Start();
 void Update(float delta);
@@ -55,9 +60,8 @@ int main()
         std::chrono::duration<float> fpsElapsedTime = fpsCurrentTime - fpsTimer;
         if (fpsElapsedTime.count() >= 1.0f)
         {
-            std::cout << "MaxFramesPerSecond: " << 1 / drawTime << " FPS" << '\n';
+            std::cout << "FramesPerSecond: " << 1 / drawTime << " fps" << '\n';
             std::cout << "DrawTime: " << drawTime * 1000.0f << " ms" << '\n';
-            std::cout << "FramesPerSecond: " << frameCount << " FPS" << '\n';
             std::cout << std::endl;
             frameCount = 0;
             fpsTimer = fpsCurrentTime;
@@ -69,19 +73,48 @@ int main()
 
 void Start()
 {
-    // Start Things
+    srand(time(0));
+ 
+    for(int i = 0; i < bodyC; i++)
+    {
+        int shapeType = i % 2;
+
+        Plain::Body *body = NULL;
+
+        int x = rand() % 700;
+        int y = rand() % 500;
+
+        if(shapeType == Plain::RectangleShape)
+        {
+            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Red, sf::Color::White, false);
+        }
+        else if(shapeType == Plain::CircleShape)
+        {
+            body = new Plain::Circle(10.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Red, sf::Color::White, false);
+        }
+
+        if(body != NULL) bodyList.insert(body);
+    }
 }
 
 void Update(float delta)
 {
     // Update Things
+    for(int i = 0; i < bodyC; i++)
+        if(bodyList[i] != NULL) 
+            bodyList[i]->Move(Plain::Vector2D(0, 9.81f) * delta);
 }
 
 void Draw()
 {
     // DrawThings
 
-    window.clear(sf::Color::White);
+    window.clear(sf::Color::Black);
+
+    for(int i = 0; i < bodyC; i++)
+        if(bodyList[i] != NULL) 
+            bodyList[i]->Draw(window);
+
     window.display();
 }
 

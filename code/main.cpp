@@ -60,7 +60,7 @@ int main()
         std::chrono::duration<float> fpsElapsedTime = fpsCurrentTime - fpsTimer;
         if (fpsElapsedTime.count() >= 1.0f)
         {
-            std::cout << "FramesPerSecond: " << 1 / drawTime << " fps" << '\n';
+            std::cout << "FramesPerSecond: " << (int)(1 / drawTime) << " fps" << '\n';
             std::cout << "DrawTime: " << drawTime * 1000.0f << " ms" << '\n';
             std::cout << std::endl;
             frameCount = 0;
@@ -101,8 +101,10 @@ void Update(float delta)
 {
     // Update Things
     for(int i = 0; i < bodyC; i++)
-        if(bodyList[i] != NULL) 
+        if(bodyList[i] != NULL) {
             bodyList[i]->Move(Plain::Vector2D(0, 9.81f) * delta);
+            bodyList[i]->Rotate(20 * delta);
+        }
 }
 
 void Draw()

@@ -12,6 +12,9 @@ namespace Plain{
 		    virtual void Draw(sf::RenderWindow&) = 0;
 
             void Move(Vector2D amouunt);
+            void MoveTo(Vector2D position);
+            void Rotate(float amouunt);
+            void RotateTo(float angle);
 
             Vector2D position;
             Vector2D linearVelocity;

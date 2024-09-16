@@ -6,40 +6,37 @@
 #include "Body.hpp"
 #include "Circle.hpp"
 
-namespace Plain
+Plain::Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
 {
-    Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
-    {
-        this->position = position;
-        this->linearVelocity = Vector2D().Zero();
-        this->angle = 0.0f;
-        this->angularVelocity = 0.0f;
+    this->position = position;
+    this->linearVelocity = Vector2D().Zero();
+    this->angle = 0.0f;
+    this->angularVelocity = 0.0f;
 
-        this->radius = radius;
-        this->surface = this->radius * this->radius * 3.14159263f;
-        this->density = density;
-        this->mass = this->surface * this->density;
-        this->restitution = restitution;
+    this->radius = radius;
+    this->surface = this->radius * this->radius * 3.14159263f;
+    this->density = density;
+    this->mass = this->surface * this->density;
+    this->restitution = restitution;
 
-        this->fillColor = fillColor;
-        this->outlineColor = outlineColor;
+    this->fillColor = fillColor;
+    this->outlineColor = outlineColor;
 
-        this->isStatic = isStatic;
+    this->isStatic = isStatic;
 
-        this->type = CircleShape;
+    this->type = CircleShape;
 
-		this->circle = sf::CircleShape(this->radius);
-        this->circle.setOrigin(sf::Vector2f(this->radius, this->radius));
-    }
+    this->circle = sf::CircleShape(this->radius);
+    this->circle.setOrigin(sf::Vector2f(this->radius, this->radius));
+    this->circle.setFillColor(this->fillColor);
+    this->circle.setOutlineColor(this->outlineColor);
+    this->circle.setOutlineThickness(1);
+}
 
-    void Circle::Draw(sf::RenderWindow& window)
-    {
-        this->circle.setPosition(Vector2DtosfmlVector2D(this->position));
-        this->circle.setRotation(this->angle);
-        this->circle.setFillColor(this->fillColor);
-        this->circle.setOutlineColor(this->outlineColor);
-        this->circle.setOutlineThickness(1);
+void Plain::Circle::Draw(sf::RenderWindow& window)
+{
+    this->circle.setPosition(Vector2DtosfmlVector2D(this->position));
+    this->circle.setRotation(this->angle);
 
-        window.draw(this->circle);
-    }
+    window.draw(this->circle);
 }

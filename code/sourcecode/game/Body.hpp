@@ -1,3 +1,5 @@
+#pragma once
+
 namespace Plain{
     enum{
         RectangleShape,

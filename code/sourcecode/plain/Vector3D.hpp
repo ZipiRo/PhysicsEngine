@@ -1,3 +1,5 @@
+#pragma once
+
 namespace Plain{    
     class Vector3D {
     public:

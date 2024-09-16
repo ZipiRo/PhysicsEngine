@@ -11,7 +11,7 @@ sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
 int FPS = 120;
 
 Plain::LinkedList<Plain::Body*> bodyList;
-int bodyC = 50;
+int bodyC = 10;
 
 void Start();
 void Update(float delta);
@@ -37,6 +37,11 @@ int main()
             if (event.type == sf::Event::Closed)
             {
                 window.close();
+            }
+
+            if(event.type == sf::Event::KeyPressed){
+                if(event.key.code == sf::Keyboard::Escape)
+                    window.close();
             }
         }
 

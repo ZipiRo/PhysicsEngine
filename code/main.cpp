@@ -21,9 +21,9 @@ float GetDrawTime();
 int main()
 {
     std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
-    float delta = 0.0f;
-    float drawInterval = 1.0f / FPS;
-    float accumulator = 0.0f;
+    double delta = 0.0f;
+    double drawInterval = 1.0f / FPS;
+    double accumulator = 0.0f;
     int frameCount = 0;
     auto fpsTimer = std::chrono::high_resolution_clock::now();
 
@@ -90,6 +90,7 @@ void Start()
 
         int x = rand() % 700;
         int y = rand() % 500;
+        // int radius = rand() % 20;
 
         if(shapeType == Plain::RectangleShape)
         {

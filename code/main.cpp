@@ -6,7 +6,7 @@
 #include "sourcecode/plain/Plain.hpp"
 #include "sourcecode/game/Game.hpp"
 
-sf::RenderWindow window(sf::VideoMode(800, 600), "Physics Engine");
+sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
 int FPS = 120;
 
@@ -112,13 +112,13 @@ void Update(float delta)
     Plain::Vector2D direction;
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        direction = Plain::Vector2D(0, -1);
+        direction.y--;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        direction = Plain::Vector2D(0, 1);
+        direction.y++;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        direction = Plain::Vector2D(-1, 0);
+        direction.x--;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        direction = Plain::Vector2D(1, 0);
+        direction.x++;
 
     if(direction.x != 0 || direction.y != 0)
     {

@@ -9,7 +9,7 @@ namespace Plain{
             void Draw(sf::RenderWindow& window) override;
 
         private:
-            sf::RectangleShape rectangle;
+            sf::RectangleShape rectangleShape;
 
             Vector2D vertices[4];
             Vector2D transformedVertices[4];

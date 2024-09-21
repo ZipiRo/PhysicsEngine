@@ -1,7 +1,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
 
-#include "Vector2D.hpp"
+#include "Vector2D.h"
 
 namespace Plain
 {

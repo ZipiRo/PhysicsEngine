@@ -9,6 +9,6 @@ namespace Plain{
             void Draw(sf::RenderWindow&) override;
 
         private:
-            sf::CircleShape circle;
+            sf::CircleShape circleShape;
     };
 }

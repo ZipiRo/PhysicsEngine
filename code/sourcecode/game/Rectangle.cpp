@@ -1,10 +1,10 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <Vector2D.hpp>
+#include <Vector2D.h>
 
-#include "Body.hpp"
-#include "Rectangle.hpp"
+#include "Body.h"
+#include "Rectangle.h"
 
 Plain::Rectangle::Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
 {
@@ -27,17 +27,18 @@ Plain::Rectangle::Rectangle (float width, float height, Vector2D position, float
 
     this->type = RectangleShape;
 
-    this->rectangle = sf::RectangleShape(sf::Vector2f(width, height));
-    this->rectangle.setOrigin(sf::Vector2f(width / 2, height / 2));
-    this->rectangle.setFillColor(this->fillColor);
-    this->rectangle.setOutlineColor(this->outlineColor);
-    this->rectangle.setOutlineThickness(1);
+    this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
+    this->rectangleShape.setOrigin(sf::Vector2f(width / 2, height / 2));
+    this->rectangleShape.setFillColor(this->fillColor);
+    this->rectangleShape.setOutlineColor(this->outlineColor);
+    this->rectangleShape.setOutlineThickness(1);
+    this->shape = &this->rectangleShape;
 }
 
 void Plain::Rectangle::Draw(sf::RenderWindow& window)
 {
-    this->rectangle.setPosition(Vector2DtosfmlVector2D(this->position));
-    this->rectangle.setRotation(this->angle);
+    this->rectangleShape.setPosition(Vector2DtosfmlVector2D(this->position));
+    this->rectangleShape.setRotation(this->angle);
 
-    window.draw(this->rectangle);
+    window.draw(this->rectangleShape);
 }

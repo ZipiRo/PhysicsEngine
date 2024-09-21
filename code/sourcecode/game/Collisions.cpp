@@ -1,7 +1,7 @@
 #include <SFML/System/Vector2.hpp>
-#include <Vector2D.hpp>
+#include <Vector2D.h>
 
-#include "Collisions.hpp"
+#include "Collisions.h"
 
 bool Plain::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
         Vector2D &normal, float &depth){

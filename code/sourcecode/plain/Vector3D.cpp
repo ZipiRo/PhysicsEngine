@@ -1,6 +1,6 @@
 #include <SFML/System/Vector3.hpp>
 
-#include "Vector3D.hpp"
+#include "Vector3D.h"
 
 namespace Plain
 {

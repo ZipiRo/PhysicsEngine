@@ -1,10 +1,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <Vector2D.hpp>
+#include <Vector2D.h>
 
-#include "Body.hpp"
-#include "Circle.hpp"
+#include "Body.h"
+#include "Circle.h"
 
 Plain::Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
 {
@@ -26,17 +26,19 @@ Plain::Circle::Circle(float radius, Vector2D position, float density, float rest
 
     this->type = CircleShape;
 
-    this->circle = sf::CircleShape(this->radius);
-    this->circle.setOrigin(sf::Vector2f(this->radius, this->radius));
-    this->circle.setFillColor(this->fillColor);
-    this->circle.setOutlineColor(this->outlineColor);
-    this->circle.setOutlineThickness(1);
+    this->circleShape = sf::CircleShape(this->radius);
+    this->circleShape.setOrigin(sf::Vector2f(this->radius, this->radius));
+    this->circleShape.setFillColor(this->fillColor);
+    this->circleShape.setOutlineColor(this->outlineColor);
+    this->circleShape.setOutlineThickness(1);
+
+    this->shape = &this->circleShape;
 }
 
 void Plain::Circle::Draw(sf::RenderWindow& window)
 {
-    this->circle.setPosition(Vector2DtosfmlVector2D(this->position));
-    this->circle.setRotation(this->angle);
+    this->circleShape.setPosition(Vector2DtosfmlVector2D(this->position));
+    this->circleShape.setRotation(this->angle);
 
-    window.draw(this->circle);
+    window.draw(this->circleShape);
 }

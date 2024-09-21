@@ -3,15 +3,17 @@
 #include <chrono>
 #include <random>
 
-#include "sourcecode/plain/Plain.hpp"
-#include "sourcecode/game/Game.hpp"
+#include "sourcecode/plain/Plain.h"
+#include "sourcecode/game/Game.h"
+#include "sourcecode/plain/LinkedList.h"
+#include "sourcecode/engine/Timer.h"
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
-int FPS = 120;
+float FPS = 60.0f;
 
 Plain::LinkedList<Plain::Body*> bodyList;
-int bodyC = 10;
+int bodyC = 100;
 
 void Start();
 void Update(float delta);
@@ -20,12 +22,10 @@ float GetDrawTime();
 
 int main()
 {
-    std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
-    double delta = 0.0f;
-    double drawInterval = 1.0f / FPS;
-    double accumulator = 0.0f;
-    int frameCount = 0;
-    auto fpsTimer = std::chrono::high_resolution_clock::now();
+    EngineUtils::Timer* timer = EngineUtils::Timer::Instance();
+
+    float elapsedTime = 0.0f;
+    int frames = 0;
 
     Start();
 
@@ -44,34 +44,28 @@ int main()
                     window.close();
             }
         }
+        
+        timer->Tick();
 
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> elapsedTime = currentTime - lastTime;
-        lastTime = currentTime;
-        delta = elapsedTime.count();
+        if(timer->DeltaTime() >= 1.0 / FPS)
+        {   
+            timer->Reset();
+            elapsedTime += timer->DeltaTime();
+            frames++;
 
-        accumulator += delta;
+            if(elapsedTime >= 1.0f){
+                std::cout << 1 / timer->DeltaTime() << "fps" << '\n';
+                elapsedTime = 0.0f ;
+                frames = 0;
+            }
 
-        while (accumulator >= drawInterval)
-        {
-            Update(drawInterval);
-            accumulator -= drawInterval;
-            frameCount++;
+            Update(timer->DeltaTime()); 
         }
 
-        float drawTime = GetDrawTime();
-
-        auto fpsCurrentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> fpsElapsedTime = fpsCurrentTime - fpsTimer;
-        if (fpsElapsedTime.count() >= 1.0f)
-        {
-            std::cout << "FramesPerSecond: " << (int)(1.0f / drawTime) << " fps" << '\n';
-            std::cout << "DrawTime: " << drawTime * 1000.0f << " ms" << '\n';
-            std::cout << std::endl;
-            frameCount = 0;
-            fpsTimer = fpsCurrentTime;
-        }
+        Draw();
     }
+
+    EngineUtils::Timer::Relese();
 
     return 0;
 }
@@ -88,21 +82,23 @@ void Start()
 
         Plain::Body *body = NULL;
 
-        int x = rand() % 700;
-        int y = rand() % 500;
-        // int radius = rand() % 20;
+        int x = rand() % 800;
+        int y = rand() % 600;
+        int radius = rand() % 15 + 10;
 
         if(shapeType == Plain::RectangleShape)
         {
-            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
+            // body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
         }
         else if(shapeType == Plain::CircleShape)
         {
-            body = new Plain::Circle(20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
+            body = new Plain::Circle(radius, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
 
         if(body != NULL) bodyList.insert(body);
     }
+
+    bodyList[0]->SetFillColor(sf::Color::Black);
 }
 
 void Update(float delta)
@@ -157,16 +153,4 @@ void Draw()
             bodyList[i]->Draw(window);
 
     window.display();
-}
-
-float GetDrawTime()
-{
-    auto start = std::chrono::high_resolution_clock::now();
-
-    Draw();
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float> drawDuration = end - start;
-
-    return drawDuration.count();
 }

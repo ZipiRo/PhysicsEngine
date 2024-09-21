@@ -18,6 +18,8 @@ namespace Plain{
             void MoveTo(Vector2D position);
             void Rotate(float amouunt);
             void RotateTo(float angle);
+            void SetFillColor(sf::Color color);
+            void SetOutlineColor(sf::Color color);
 
             Vector2D position;
             Vector2D linearVelocity;
@@ -38,6 +40,7 @@ namespace Plain{
 
             sf::Color fillColor;
             sf::Color outlineColor;
+            sf::Shape* shape;
 
             int type;
             

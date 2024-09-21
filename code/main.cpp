@@ -3,10 +3,8 @@
 #include <chrono>
 #include <random>
 
-#include "sourcecode/plain/Plain.h"
-#include "sourcecode/game/Game.h"
-#include "sourcecode/plain/LinkedList.h"
-#include "sourcecode/engine/Timer.h"
+#include "sourcecode/plainengine/PlainEngine.h"
+#include "sourcecode/plainphysics/PlainPhysics.h"
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 

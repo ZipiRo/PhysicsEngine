@@ -15,7 +15,7 @@ if not exist %OUTPUT_DIR% mkdir %OUTPUT_DIR%
 rem Compile all .cpp files in the source directory into .o files
 for %%f in ("%SOURCE_DIR%\*.cpp") do (
     set /p =Compiling [3m[34m%%~nxf[0m...<nul
-    g++ -c "%%f" -o "%OUTPUT_DIR%\%%~nf.o" -Isrc\include -Icode\sourcecode\plain 
+    g++ -c "%%f" -o "%OUTPUT_DIR%\%%~nf.o" -Isrc\include -Icode\sourcecode\plainengine 
     if errorlevel 1 (
         set /p = [31merror[0m <nul
         echo.

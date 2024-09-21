@@ -14,12 +14,11 @@ compile:
 	@g++ -Isrc/include -c code/*.cpp
 
 create:
-	@clib code/sourcecode/engine lib/engine libengine.a
-	@clib code/sourcecode/plain lib/plain libplain.a
-	@clib code/sourcecode/game lib/game libgame.a
+	@clib code/sourcecode/plainengine lib/plainengine libplain-engine.a
+	@clib code/sourcecode/plainphysics lib/plainphysics libplain-physics.a
 
 link:
-	@g++ *.o -o build/$(EXETYPE)/PhysicsEngine -Llib/engine -lengine -Llib/plain -lplain -Llib/game -lgame  $(LDFLAGS)
+	@g++ *.o -o build/$(EXETYPE)/PhysicsEngine -Llib/plainengine -lplain-engine -Llib/plainphysics -lplain-physics $(LDFLAGS)
 
 clean:
 	@del *.o

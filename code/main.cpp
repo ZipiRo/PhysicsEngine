@@ -3,6 +3,7 @@
 #include <chrono>
 #include <random>
 
+#include "sourcecode/plainengine/LinkedList.h"
 #include "sourcecode/plainengine/PlainEngine.h"
 #include "sourcecode/plainphysics/PlainPhysics.h"
 
@@ -76,7 +77,7 @@ void Start()
  
     for(int i = 0; i < bodyC; i++)
     {
-        int shapeType = 1;
+        int shapeType = 0;
 
         Plain::Body *body = NULL;
 
@@ -86,11 +87,11 @@ void Start()
 
         if(shapeType == Plain::RectangleShape)
         {
-            // body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
+            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::Blue, sf::Color::White, false);
         }
         else if(shapeType == Plain::CircleShape)
         {
-            body = new Plain::Circle(radius, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            // body = new Plain::Circle(radius, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
 
         if(body != NULL) bodyList.insert(body);
@@ -102,42 +103,48 @@ void Start()
 void Update(float delta)
 {
     // Update Things
-    
-    Plain::Vector2D direction;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        direction.y--;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        direction.y++;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        direction.x--;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        direction.x++;
+    // Plain::Vector2D direction;
 
-    if(direction.x != 0 || direction.y != 0)
-    {
-        direction = Plain::Normalize(direction);
-        Plain::Vector2D velocity = direction * 200.0f * delta;
+    // if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    //     direction.y--;
+    // if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    //     direction.y++;
+    // if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    //     direction.x--;
+    // if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    //     direction.x++;
 
-        bodyList[0]->Move(velocity);
-    }
+    // if(direction.x != 0 || direction.y != 0)
+    // {
+    //     direction = Plain::Normalize(direction);
+    //     Plain::Vector2D velocity = direction * 200.0f * delta;
 
-    for(int i = 0; i < bodyList.length() - 1; i++)
-    {
-        Plain::Body *bodyA = bodyList[i];
+    //     bodyList[0]->Move(velocity);
+    // }
 
-        for(int j = i + 1; j < bodyList.length(); j++)
-        {
-            Plain::Body *bodyB = bodyList[j];
+    // for(int i = 0; i < bodyList.length() - 1; i++)
+    // {
+    //     Plain::Body *bodyA = bodyList[i];
+
+    //     for(int j = i + 1; j < bodyList.length(); j++)
+    //     {
+    //         Plain::Body *bodyB = bodyList[j];
             
-            Plain::Vector2D normal; float depth;
-            if(Plain::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
-            {
-                bodyA->Move((normal * -1.0f) * depth / 2.0f);
-                bodyB->Move(normal * depth / 2.0f);
-            }
-        }
+    //         Plain::Vector2D normal; float depth;
+    //         if(Plain::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+    //         {
+    //             bodyA->Move((normal * -1.0f) * depth / 2.0f);
+    //             bodyB->Move(normal * depth / 2.0f);
+    //         }
+    //     }
+    // }
+
+    for(int i = 0; i < bodyList.length(); i++)
+    {
+        bodyList[i]->Rotate(45 * delta);
     }
+    
 }
 
 void Draw()

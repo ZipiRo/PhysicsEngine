@@ -1,8 +1,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <Vector2D.h>
 
+#include "Vector2D.h"
+#include "Transform.h"
+#include "Vector.h"
 #include "Body.h"
 #include "Circle.h"
 

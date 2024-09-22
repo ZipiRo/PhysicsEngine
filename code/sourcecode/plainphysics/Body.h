@@ -9,12 +9,7 @@ namespace Plain{
 
     class Body
     {
-        public:
-            Body();
-            
-		    virtual void Draw(sf::RenderWindow&) = 0;
-
-            void Move(Vector2D amouunt);
+        public:void Move(Vector2D amouunt);
             void MoveTo(Vector2D position);
             void Rotate(float amouunt);
             void RotateTo(float angle);
@@ -38,12 +33,18 @@ namespace Plain{
             float width;
             float height;
 
+            bool UPDATETRANSFORM;
+            bool UPDATEAABB;
+
             sf::Color fillColor;
             sf::Color outlineColor;
             sf::Shape* shape;
 
             int type;
+
+            Body();
             
-        private:
+		    virtual void Draw(sf::RenderWindow&) = 0;
     };
+
 }

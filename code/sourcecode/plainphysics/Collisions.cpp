@@ -1,10 +1,13 @@
 #include <SFML/System/Vector2.hpp>
-#include <Vector2D.h>
 
+#include "Vector2D.h"
+#include "Transform.h"
+#include "Vector.h"
 #include "Collisions.h"
 
 bool Plain::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
-        Vector2D &normal, float &depth){
+        Vector2D &normal, float &depth)
+{
 
     normal = Vector2D().Zero();
     depth = 0.0f;

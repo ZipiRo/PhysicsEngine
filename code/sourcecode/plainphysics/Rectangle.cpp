@@ -1,8 +1,11 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <Vector2D.h>
+#include <LinkedList.h>
 
+#include "Vector2D.h"
+#include "Transform.h"
+#include "Vector.h"
 #include "Body.h"
 #include "Rectangle.h"
 
@@ -27,12 +30,18 @@ Plain::Rectangle::Rectangle (float width, float height, Vector2D position, float
 
     this->type = RectangleShape;
 
+    this->vertices = CreateBoxVertices(this->width, this->height);
+    this->transformedVertices = this->vertices;
+
     this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
     this->rectangleShape.setOrigin(sf::Vector2f(width / 2, height / 2));
     this->rectangleShape.setFillColor(this->fillColor);
     this->rectangleShape.setOutlineColor(this->outlineColor);
     this->rectangleShape.setOutlineThickness(1);
     this->shape = &this->rectangleShape;
+
+    this->UPDATETRANSFORM = true;
+    this->UPDATEAABB = true;
 }
 
 void Plain::Rectangle::Draw(sf::RenderWindow& window)
@@ -41,4 +50,38 @@ void Plain::Rectangle::Draw(sf::RenderWindow& window)
     this->rectangleShape.setRotation(this->angle);
 
     window.draw(this->rectangleShape);
+}
+
+Plain::LinkedList<Plain::Vector2D> Plain::CreateBoxVertices(float width, float heigth)
+{
+    float left = -width / 2.0f;
+    float right = left + width;
+    float bottom = -heigth / 2.0f;
+    float top = bottom + heigth;
+
+    Plain::LinkedList<Vector2D> vertices;
+    vertices.insert(Vector2D(left, top));
+    vertices.insert(Vector2D(right, top));
+    vertices.insert(Vector2D(right, bottom));
+    vertices.insert(Vector2D(left, bottom));
+
+    return vertices;
+}
+
+Plain::LinkedList<Plain::Vector2D> Plain::Rectangle::GetTransformedVertices()
+{
+    if(this->UPDATETRANSFORM)
+    {
+        Plain::Transform transform(this->position, this->angle);
+
+        for(int i = 0; i < this->vertices.length(); i++)
+        {
+            Plain::Vector2D v = this->vertices[i];
+            this->transformedVertices[i] = Plain::VectorTransform(v,  transform);
+        }
+
+        this->UPDATETRANSFORM = false;
+    }
+
+    return this->transformedVertices;
 }

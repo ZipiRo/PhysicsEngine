@@ -49,7 +49,7 @@ if "%COMPILATION_SUCCESSFUL%"=="false" (
         echo.
     )
 )
-    echo Static library %STATIC_LIB% [32mcreated successfully.[0m
+    echo Static library [33m%STATIC_LIB%[0m created successfully.
 )
 
 exit /b 0

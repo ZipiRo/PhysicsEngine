@@ -13,7 +13,7 @@ namespace Plain
 
         Node(T data) {
             this->data = data;
-            this->next = nullptr;
+            this->next = NULL;
         }
     };
 
@@ -24,7 +24,7 @@ namespace Plain
 
     public:
         LinkedList() {
-            head = nullptr;
+            head = NULL;
         }
 
         ~LinkedList() {
@@ -33,11 +33,12 @@ namespace Plain
 
         void insert(T data) {
             Node<T>* newNode = new Node<T>(data);
-            if (head == nullptr) {
+            if (!head) {
                 head = newNode;
+                return;
             } else {
                 Node<T>* temp = head;
-                while (temp->next != nullptr) {
+                while (temp->next != NULL) {
                     temp = temp->next;
                 }
                 temp->next = newNode;
@@ -46,20 +47,20 @@ namespace Plain
 
         void deleteNode(T key) {
             Node<T>* temp = head;
-            Node<T>* prev = nullptr;
+            Node<T>* prev = NULL;
 
-            if (temp != nullptr && temp->data == key) {
+            if (temp != NULL && temp->data == key) {
                 head = temp->next; 
                 delete temp;       
                 return;
             }
 
-            while (temp != nullptr && temp->data != key) {
+            while (temp != NULL && temp->data != key) {
                 prev = temp;
                 temp = temp->next;
             }
 
-            if (temp == nullptr) return;
+            if (temp == NULL) return;
 
             prev->next = temp->next;
 
@@ -69,7 +70,7 @@ namespace Plain
         int length() {
             int count = 0;
             Node<T>* temp = head;
-            while (temp != nullptr) {
+            while (temp != NULL) {
                 count++;
                 temp = temp->next;
             }
@@ -91,21 +92,12 @@ namespace Plain
         void clear() {
             Node<T>* current = head;
             Node<T>* nextNode;
-            while (current != nullptr) {
+            while (current != NULL) {
                 nextNode = current->next;
                 delete current;
                 current = nextNode;
             }
-            head = nullptr;
-        }
-        
-        void display() {
-            Node<T>* temp = head;
-            while (temp != nullptr) {
-                std::cout << temp->data << " -> ";
-                temp = temp->next;
-            }
-            std::cout << "nullptr" << std::endl;
+            head = NULL;
         }
     };
 }

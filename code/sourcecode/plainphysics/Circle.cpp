@@ -1,6 +1,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <LinkedList.h>
 
 #include "Vector2D.h"
 #include "Transform.h"
@@ -43,4 +44,9 @@ void Plain::Circle::Draw(sf::RenderWindow& window)
     this->circleShape.setRotation(this->angle);
 
     window.draw(this->circleShape);
+}
+
+Plain::Vector2D* Plain::Circle::GetTransformedVertices()
+{
+    return NULL;
 }

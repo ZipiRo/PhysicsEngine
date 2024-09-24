@@ -7,14 +7,15 @@ namespace Plain{
             Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
             
             void Draw(sf::RenderWindow& window) override;
-            LinkedList<Vector2D> GetTransformedVertices();
+            Vector2D* GetTransformedVertices() override;
 
         private:
             sf::RectangleShape rectangleShape;
             
-            Plain::LinkedList<Vector2D> vertices;
-            Plain::LinkedList<Vector2D> transformedVertices;
+            Vector2D vertices[4];
+            Vector2D transformVertices[4];
     };
 
-    LinkedList<Vector2D> CreateBoxVertices(float width, float heigth);
+    Vector2D* CreateRectangleVertices(float width, float heigth);
+    Vector2D* TransformVertices(Vector2D* vertices, Vector2D position, float angle);
 }

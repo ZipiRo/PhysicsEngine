@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <LinkedList.h>
 
 #include "Vector2D.h"
 #include "Body.h"
@@ -7,22 +8,22 @@ Plain::Body::Body () {}
 
 void Plain::Body::Move(Plain::Vector2D amount) {
     this->position += amount;
-    this->UPDATETRANSFORM = true;
+    this->UPDATE_VERTICES = true;
 }
 
 void Plain::Body::MoveTo(Plain::Vector2D position) {
     this->position = position;
-    this->UPDATETRANSFORM = true;
+    this->UPDATE_VERTICES = true;
 }
 
 void Plain::Body::Rotate(float amount) {
     this->angle += amount;
-    this->UPDATETRANSFORM = true;
+    this->UPDATE_VERTICES = true;
 }
 
 void Plain::Body::RotateTo(float angle) {
     this->angle = angle;
-    this->UPDATETRANSFORM = true;
+    this->UPDATE_VERTICES = true;
 }
 
 void Plain::Body::SetFillColor(sf::Color color) {

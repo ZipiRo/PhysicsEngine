@@ -30,8 +30,11 @@ Plain::Rectangle::Rectangle (float width, float height, Vector2D position, float
 
     this->type = RectangleShape;
 
-    this->vertices = CreateBoxVertices(this->width, this->height);
-    this->transformedVertices = this->vertices;
+    for(int i = 0; i < 4; i++)
+    {
+        this->vertices[i] = CreateRectangleVertices(this->width, this->height)[i];
+        this->transformVertices[i] = vertices[i];
+    }
 
     this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
     this->rectangleShape.setOrigin(sf::Vector2f(width / 2, height / 2));
@@ -40,48 +43,64 @@ Plain::Rectangle::Rectangle (float width, float height, Vector2D position, float
     this->rectangleShape.setOutlineThickness(1);
     this->shape = &this->rectangleShape;
 
-    this->UPDATETRANSFORM = true;
-    this->UPDATEAABB = true;
+    this->UPDATE_VERTICES = true;
+    this->UPDATE_AABB = true;
 }
 
 void Plain::Rectangle::Draw(sf::RenderWindow& window)
-{
+{   
+    this->GetTransformedVertices();
+
     this->rectangleShape.setPosition(Vector2DtosfmlVector2D(this->position));
     this->rectangleShape.setRotation(this->angle);
 
     window.draw(this->rectangleShape);
+
+    this->UPDATE_VERTICES = false;
 }
 
-Plain::LinkedList<Plain::Vector2D> Plain::CreateBoxVertices(float width, float heigth)
+Plain::Vector2D* Plain::CreateRectangleVertices(float width, float heigth)
 {
     float left = -width / 2.0f;
     float right = left + width;
     float bottom = -heigth / 2.0f;
     float top = bottom + heigth;
 
-    Plain::LinkedList<Vector2D> vertices;
-    vertices.insert(Vector2D(left, top));
-    vertices.insert(Vector2D(right, top));
-    vertices.insert(Vector2D(right, bottom));
-    vertices.insert(Vector2D(left, bottom));
+    Vector2D vertices[4];
+    Vector2D *s_Vector2Dp = vertices;
 
-    return vertices;
+    vertices[0] = Vector2D(left, top);
+    vertices[1] = Vector2D(right, top);
+    vertices[2] = Vector2D(right, bottom);
+    vertices[3] = Vector2D(left, bottom);
+
+    return s_Vector2Dp;
 }
 
-Plain::LinkedList<Plain::Vector2D> Plain::Rectangle::GetTransformedVertices()
+Plain::Vector2D* Plain::TransformVertices(Plain::Vector2D* vertices, Plain::Vector2D position, float angle)
 {
-    if(this->UPDATETRANSFORM)
+    Transform transform(position, angle);
+    
+    Vector2D transformVertices[4];
+    Vector2D *s_Vector2Dp = transformVertices;
+
+    for(int i = 0; i < 4; i++)
     {
-        Plain::Transform transform(this->position, this->angle);
-
-        for(int i = 0; i < this->vertices.length(); i++)
-        {
-            Plain::Vector2D v = this->vertices[i];
-            this->transformedVertices[i] = Plain::VectorTransform(v,  transform);
-        }
-
-        this->UPDATETRANSFORM = false;
+        Vector2D v = vertices[i];
+        transformVertices[i] = VectorTransform(v, transform);
     }
 
-    return this->transformedVertices;
+    return s_Vector2Dp;
+}
+
+Plain::Vector2D* Plain::Rectangle::GetTransformedVertices()
+{
+    if(this->UPDATE_VERTICES)
+    {
+        for(int i = 0; i < 4; i++)
+            this->transformVertices[i] = TransformVertices(this->vertices, this->position, this->angle)[i];
+    }
+
+    this->UPDATE_VERTICES = false;
+    return this->transformVertices;
 }

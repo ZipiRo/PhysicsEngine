@@ -33,8 +33,8 @@ namespace Plain{
             float width;
             float height;
 
-            bool UPDATETRANSFORM;
-            bool UPDATEAABB;
+            bool UPDATE_VERTICES;
+            bool UPDATE_AABB;
 
             sf::Color fillColor;
             sf::Color outlineColor;
@@ -45,6 +45,7 @@ namespace Plain{
             Body();
             
 		    virtual void Draw(sf::RenderWindow&) = 0;
+            virtual Vector2D* GetTransformedVertices() = 0;
     };
 
 }

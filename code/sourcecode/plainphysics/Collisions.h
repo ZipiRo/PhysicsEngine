@@ -1,8 +1,11 @@
 #pragma once
 
-namespace Plain
+namespace plain
 {
-    bool IntersectPolygons(Vector2D* verticesA, Vector2D* verticesB);
-    bool IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
-        Vector2D &normal, float &depth);
+    namespace collisions
+    {
+        bool IntersectPolygons(Vector2D* verticesA, Vector2D* verticesB);
+        bool IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
+            Vector2D &normal, float &depth);
+    }
 }

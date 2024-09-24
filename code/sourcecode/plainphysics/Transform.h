@@ -1,16 +1,19 @@
 #pragma once
 
-namespace Plain
+namespace plain
 {
-    class Transform
+    namespace transform
     {
-        public:
-            Vector2D position;
-            float sin;
-            float cos;
+        class Transform
+        {
+            public:
+                Vector2D position;
+                float sin;
+                float cos;
 
-            Transform();
-            Transform(Vector2D position, float angle);
-            Transform(float x, float y, float angle);
-    };
+                Transform();
+                Transform(Vector2D position, float angle);
+                Transform(float x, float y, float angle);
+        };
+    }
 }

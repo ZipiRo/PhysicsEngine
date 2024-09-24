@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace Plain
+namespace plain
 {
     template <typename T>
     class Node {

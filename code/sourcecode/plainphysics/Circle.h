@@ -1,15 +1,19 @@
 #pragma once
 
-namespace Plain{
-    class Circle : public Body
+namespace plain
+{
+    namespace body
     {
-        public:
-            Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
+        class Circle : public Body
+        {
+            public:
+                Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
 
-            void Draw(sf::RenderWindow&) override;
-            Vector2D* GetTransformedVertices() override;
+                void Draw(sf::RenderWindow&) override;
+                Vector2D* GetTransformedVertices() override;
 
-        private:
-            sf::CircleShape circleShape;
-    };
+            private:
+                sf::CircleShape circleShape;
+        };
+    }
 }

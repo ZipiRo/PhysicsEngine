@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Plain{
+namespace plain{
     enum{
         RectangleShape,
         CircleShape,

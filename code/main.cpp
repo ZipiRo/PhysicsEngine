@@ -7,12 +7,14 @@
 #include "sourcecode/plainengine/PlainEngine.h"
 #include "sourcecode/plainphysics/PlainPhysics.h"
 
+using namespace plain;
+
 sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
 float FPS = 60.0f;
 
-Plain::LinkedList<Plain::Body*> bodyList;
-int bodyC = 200;
+plain::LinkedList<plain::Body*> bodyList;
+int bodyC = 50;
 
 void Start();
 void Update(float delta);
@@ -78,17 +80,17 @@ void Start()
     {
         int shapeType = 0;
 
-        Plain::Body *body = NULL;
+        plain::Body *body = NULL;
 
         int x = rand() % 800;
         int y = rand() % 600;
         int radius = rand() % 15 + 10;
 
-        if(shapeType == Plain::RectangleShape)
+        if(shapeType == plain::RectangleShape)
         {
-            body = new Plain::Rectangle(20.0f, 20.0f, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            body = new body::Rectangle(20.0f, 20.0f, plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
-        else if(shapeType == Plain::CircleShape)
+        else if(shapeType == plain::CircleShape)
         {
             // body = new Plain::Circle(radius, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
@@ -103,7 +105,7 @@ void Update(float delta)
 {
     // Update Things
 
-    Plain::Vector2D direction;
+    plain::Vector2D direction;
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         direction.y--;
@@ -116,8 +118,8 @@ void Update(float delta)
 
     if(direction.x != 0 || direction.y != 0)
     {
-        direction = Plain::Normalize(direction);
-        Plain::Vector2D velocity = direction * 200.0f * delta;
+        direction = vectormath::Normalize(direction);
+        plain::Vector2D velocity = direction * 200.0f * delta;
 
         bodyList[0]->Move(velocity);
     }
@@ -129,13 +131,13 @@ void Update(float delta)
 
     for(int i = 0; i < bodyList.length() - 1; i++)
     {
-        Plain::Body *bodyA = bodyList[i];
+        plain::Body *bodyA = bodyList[i];
 
         for(int j = i + 1; j < bodyList.length(); j++)
         {
-            Plain::Body *bodyB = bodyList[j];
+            plain::Body *bodyB = bodyList[j];
 
-            if(Plain::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
+            if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
             {
                 bodyA->SetOutlineColor(sf::Color::Red);
                 bodyB->SetOutlineColor(sf::Color::Red);

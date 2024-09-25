@@ -13,7 +13,7 @@ sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
 float FPS = 60.0f;
 
-plain::LinkedList<plain::Body*> bodyList;
+LinkedList<Body*> bodyList;
 int bodyC = 50;
 
 void Start();
@@ -54,7 +54,7 @@ int main()
             frames++;
 
             if(elapsedTime >= 1.0f){
-                std::cout << 1 / timer->DeltaTime() << "fps" << '\n';
+                std::cout << (int)(1 / timer->DeltaTime()) << "fps" << '\n';
                 elapsedTime = 0.0f ;
                 frames = 0;
             }
@@ -78,7 +78,7 @@ void Start()
  
     for(int i = 0; i < bodyC; i++)
     {
-        int shapeType = 0;
+        int shapeType = 1;
 
         plain::Body *body = NULL;
 
@@ -88,11 +88,11 @@ void Start()
 
         if(shapeType == plain::RectangleShape)
         {
-            body = new body::Rectangle(20.0f, 20.0f, plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            // body = new body::Rectangle(20.0f, 20.0f, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
         else if(shapeType == plain::CircleShape)
         {
-            // body = new Plain::Circle(radius, Plain::Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            body = new body::Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
 
         if(body != NULL) bodyList.insert(body);
@@ -105,15 +105,15 @@ void Update(float delta)
 {
     // Update Things
 
-    plain::Vector2D direction;
+    Vector2D direction;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         direction.y--;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         direction.y++;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         direction.x--;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         direction.x++;
 
     if(direction.x != 0 || direction.y != 0)
@@ -131,26 +131,26 @@ void Update(float delta)
 
     for(int i = 0; i < bodyList.length() - 1; i++)
     {
-        plain::Body *bodyA = bodyList[i];
+        Body *bodyA = bodyList[i];
 
         for(int j = i + 1; j < bodyList.length(); j++)
         {
-            plain::Body *bodyB = bodyList[j];
+            Body *bodyB = bodyList[j];
 
-            if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
-            {
-                bodyA->SetOutlineColor(sf::Color::Red);
-                bodyB->SetOutlineColor(sf::Color::Red);
-            }
-
-            // Plain::Vector2D normal; float depth;
-            // if(Plain::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+            // if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
             // {
             //     bodyA->SetOutlineColor(sf::Color::Red);
             //     bodyB->SetOutlineColor(sf::Color::Red);
-            //     bodyA->Move((normal * -1.0f) * depth / 2.0f);
-            //     bodyB->Move(normal * depth / 2.0f);
             // }
+
+            Vector2D normal; float depth;
+            if(collisions::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+            {
+                bodyA->SetOutlineColor(sf::Color::Red);
+                bodyB->SetOutlineColor(sf::Color::Red);
+                bodyA->Move((normal * -1.0f) * depth / 2.0f);
+                bodyB->Move(normal * depth / 2.0f);
+            }
         }
     }
 

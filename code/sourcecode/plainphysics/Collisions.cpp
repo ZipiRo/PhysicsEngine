@@ -1,5 +1,5 @@
 #include <SFML/System/Vector2.hpp>
-#include <LinkedList.h>
+#include <list>
 
 #include "Vector2D.h"
 #include "Transform.h"
@@ -8,14 +8,13 @@
 
 namespace plain 
 {
-    void ProjectVertices(plain::Vector2D *vertices, plain::Vector2D axis, float &min, float &max)
+    void ProjectVertices(std::list<Vector2D>vertices, plain::Vector2D axis, float &min, float &max)
     {
         min = 1000000000.0f;
         max = -1000000000.0f;
 
-        for (int i = 0; i < 4; i++)
+        for (Vector2D v : vertices)
         {
-            plain::Vector2D v = vertices[i];
             float projection = vectormath::DotProduct(v, axis);
             
             if(projection < min) min = projection;
@@ -23,15 +22,15 @@ namespace plain
         }
     }
 
-    bool collisions::IntersectPolygons(plain::Vector2D* verticesA, plain::Vector2D* verticesB)
+    bool collisions::IntersectPolygons(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB)
     {
-        for(int i = 0; i < 4; i++)
+        for(auto vertex = verticesA.begin(); vertex != verticesA.end(); ++vertex)
         {
-            Vector2D nodeA = verticesA[i];
-            Vector2D nodeB = verticesA[(i + 1) % 4];
+            Vector2D vertexA = *vertex++;
+            Vector2D vertexB = (vertex == --verticesA.end()) ? verticesA.front() : *(vertex);
 
-            Vector2D vertex = nodeB - nodeA;
-            Vector2D axis = Vector2D(vertex.y, -vertex.x);
+            Vector2D edge = vertexB - vertexA;
+            Vector2D axis = Vector2D(edge.y, -edge.x);
 
             float minA, minB, maxA, maxB;
             ProjectVertices(verticesA, axis, minA, maxA);
@@ -43,17 +42,17 @@ namespace plain
             }
         }
 
-        for(int i = 0; i < 4; i++)
+        for(auto vertex = verticesB.begin(); vertex != verticesB.end(); ++vertex)
         {
-            Vector2D nodeA = verticesB[i];
-            Vector2D nodeB = verticesB[(i + 1) % 4];
+            Vector2D vertexA = *vertex++;
+            Vector2D vertexB = (vertex == --verticesB.end()) ? verticesB.front() : *(vertex);
 
-            Vector2D vertex = nodeB - nodeA;
-            Vector2D axis = Vector2D(vertex.y, -vertex.x);
+            Vector2D edge = vertexB - vertexA;
+            Vector2D axis = Vector2D(edge.y, -edge.x);
 
             float minA, minB, maxA, maxB;
-            ProjectVertices(verticesB, axis, minB, maxB);
             ProjectVertices(verticesA, axis, minA, maxA);
+            ProjectVertices(verticesB, axis, minB, maxB);
 
             if(minA >= maxB || minB >= maxA)
             {
@@ -65,7 +64,7 @@ namespace plain
     }
 
     bool collisions::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
-            Vector2D &normal, float &depth)
+            Vector2D &normal, float &depth) 
     {
         normal = Vector2D().Zero();
         depth = 0.0f;

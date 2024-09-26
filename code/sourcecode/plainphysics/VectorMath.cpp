@@ -25,6 +25,10 @@ namespace plain
     //     return sf::Vector3f(v.x, v.y, v.z);
     // }
 
+    bool vectormath::NAN_Values(Vector2D v) {
+        return (std::isnan(v.x) && std::isnan(v.y));
+    }
+
     plain::Vector2D vectormath::VectorTransformZ(plain::Vector2D v, transform::Transform transform) {
         return plain::Vector2D(transform.cos * v.x - transform.sin * v.y + transform.position.x, 
                                 transform.sin * v.x + transform.cos * v.y + transform.position.y);

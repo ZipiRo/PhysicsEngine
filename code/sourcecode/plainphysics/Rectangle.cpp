@@ -1,6 +1,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <list>
 
 #include "Vector2D.h"
 #include "Transform.h"
@@ -31,11 +32,8 @@ namespace plain
 
         this->type = RectangleShape;
 
-        for(int i = 0; i < 4; i++)
-        {
-            this->vertices[i] = CreateRectangleVertices(this->width, this->height)[i];
-            this->transformVertices[i] = vertices[i];
-        }
+        this->vertices = CreateRectangleVertices(this->width, this->height);
+        this->transformVertices = this->vertices;
 
         this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
         this->rectangleShape.setOrigin(sf::Vector2f(width / 2, height / 2));
@@ -60,46 +58,40 @@ namespace plain
         this->UPDATE_VERTICES = false;
     }
 
-    plain::Vector2D* body::CreateRectangleVertices(float width, float heigth)
+    std::list<Vector2D> body::CreateRectangleVertices(float width, float heigth)
     {
         float left = -width / 2.0f;
         float right = left + width;
         float bottom = -heigth / 2.0f;
         float top = bottom + heigth;
 
-        Vector2D vertices[4];
-        Vector2D *s_Vector2Dp = vertices;
+        std::list<Vector2D> vertices;
 
-        vertices[0] = Vector2D(left, top);
-        vertices[1] = Vector2D(right, top);
-        vertices[2] = Vector2D(right, bottom);
-        vertices[3] = Vector2D(left, bottom);
+        vertices.push_back(Vector2D(left, top));
+        vertices.push_back(Vector2D(right, top));
+        vertices.push_back(Vector2D(right, bottom));
+        vertices.push_back(Vector2D(left, bottom));
 
-        return s_Vector2Dp;
+        return vertices;
     }
 
-    plain::Vector2D* body::UpdateVertices(plain::Vector2D* vertices, plain::Vector2D position, float angle)
+    std::list<Vector2D> body::UpdateVertices(std::list<Vector2D> vertices, plain::Vector2D position, float angle)
     {
         transform::Transform transform(position, angle);
         
-        Vector2D transformVertices[4];
-        Vector2D *s_Vector2Dp = transformVertices;
+        std::list<Vector2D> transformVertices;
 
-        for(int i = 0; i < 4; i++)
-        {
-            Vector2D v = vertices[i];
-            transformVertices[i] = vectormath::VectorTransformZ(v, transform);
-        }
+        for(Vector2D v : vertices)
+            transformVertices.push_back(vectormath::VectorTransformZ(v, transform));
 
-        return s_Vector2Dp;
+        return transformVertices;
     }
 
-    plain::Vector2D* body::Rectangle::GetTransformedVertices()
+    std::list<Vector2D> body::Rectangle::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
         {
-            for(int i = 0; i < 4; i++)
-                this->transformVertices[i] = body::UpdateVertices(this->vertices, this->position, this->angle)[i];
+            this->transformVertices = UpdateVertices(this->vertices, this->position, this->angle);
         }
 
         this->UPDATE_VERTICES = false;

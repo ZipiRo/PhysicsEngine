@@ -10,16 +10,16 @@ namespace plain
                 Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
                 
                 void Draw(sf::RenderWindow& window) override;
-                Vector2D* GetTransformedVertices() override;
+                std::list<Vector2D> GetTransformedVertices() override;
 
             private:
                 sf::RectangleShape rectangleShape;
                 
-                Vector2D vertices[4];
-                Vector2D transformVertices[4];
+                std::list<Vector2D> vertices;
+                std::list<Vector2D> transformVertices;
         };
 
-        Vector2D* CreateRectangleVertices(float width, float heigth);
-        Vector2D* UpdateVertices(Vector2D* vertices, Vector2D position, float angle);
+        std::list<Vector2D> CreateRectangleVertices(float width, float heigth);
+        std::list<Vector2D> UpdateVertices(std::list<Vector2D> vertices, Vector2D position, float angle);
     }
 }

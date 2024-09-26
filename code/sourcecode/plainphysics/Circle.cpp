@@ -1,7 +1,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <LinkedList.h>
+#include <list>
 
 #include "Vector2D.h"
 #include "Transform.h"
@@ -48,8 +48,8 @@ namespace plain
         window.draw(this->circleShape);
     }
 
-    Vector2D* body::Circle::GetTransformedVertices()
+    std::list<Vector2D> body::Circle::GetTransformedVertices()
     {
-        return NULL;
+        return std::list<Vector2D>();
     }
 }

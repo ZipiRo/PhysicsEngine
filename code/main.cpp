@@ -2,8 +2,8 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <list>
 
-#include "sourcecode/plainengine/LinkedList.h"
 #include "sourcecode/plainengine/PlainEngine.h"
 #include "sourcecode/plainphysics/PlainPhysics.h"
 
@@ -13,8 +13,8 @@ sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
 float FPS = 60.0f;
 
-LinkedList<Body*> bodyList;
-int bodyC = 50;
+std::list<Body*> bodyList;
+int bodyC = 10;
 
 void Start();
 void Update(float delta);
@@ -78,9 +78,9 @@ void Start()
  
     for(int i = 0; i < bodyC; i++)
     {
-        int shapeType = 1;
+        int shapeType = plain::CircleShape;
 
-        plain::Body *body = NULL;
+        plain::Body *body;
 
         int x = rand() % 800;
         int y = rand() % 600;
@@ -88,17 +88,17 @@ void Start()
 
         if(shapeType == plain::RectangleShape)
         {
-            // body = new body::Rectangle(20.0f, 20.0f, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            body = new body::Rectangle(20.0f, 20.0f, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
         else if(shapeType == plain::CircleShape)
         {
             body = new body::Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
 
-        if(body != NULL) bodyList.insert(body);
+        bodyList.push_back(body);
     }
 
-    bodyList[0]->SetFillColor(sf::Color::Black);
+    bodyList.front()->SetFillColor(sf::Color::Black);
 }
 
 void Update(float delta)
@@ -121,21 +121,22 @@ void Update(float delta)
         direction = vectormath::Normalize(direction);
         plain::Vector2D velocity = direction * 200.0f * delta;
 
-        bodyList[0]->Move(velocity);
+        bodyList.front()->Move(velocity);
     }
 
-    for(int i = 0; i < bodyList.length(); i++)
+    for(Body* body : bodyList)
     {
-        bodyList[i]->SetOutlineColor(sf::Color::White);
+        body->SetOutlineColor(sf::Color::White);
+        // body->Rotate(45 * delta);
     }
 
-    for(int i = 0; i < bodyList.length() - 1; i++)
+    for(auto body_it = bodyList.begin(); body_it != --bodyList.end(); ++body_it)
     {
-        Body *bodyA = bodyList[i];
+        Body* bodyA = *body_it;
 
-        for(int j = i + 1; j < bodyList.length(); j++)
+        for(auto body_jt = ++bodyList.begin(); body_jt != bodyList.end(); ++body_jt)
         {
-            Body *bodyB = bodyList[j];
+            Body* bodyB = *body_jt;
 
             // if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
             // {
@@ -146,6 +147,7 @@ void Update(float delta)
             Vector2D normal; float depth;
             if(collisions::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
             {
+                if(vectormath::NAN_Values(normal)) continue;
                 bodyA->SetOutlineColor(sf::Color::Red);
                 bodyB->SetOutlineColor(sf::Color::Red);
                 bodyA->Move((normal * -1.0f) * depth / 2.0f);
@@ -153,9 +155,6 @@ void Update(float delta)
             }
         }
     }
-
-    for(int i = 0; i < bodyList.length(); i++)
-        bodyList[i]->Rotate(45 * delta);
 }
 
 void Draw()
@@ -164,9 +163,8 @@ void Draw()
 
     window.clear(sf::Color::Black);
 
-    for(int i = 0; i < bodyC; i++)
-        if(bodyList[i] != NULL) 
-            bodyList[i]->Draw(window);
+    for(Body* body : bodyList)
+            body->Draw(window);
 
     window.display();
 }

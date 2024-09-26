@@ -9,9 +9,9 @@ namespace plain{
 
     class Body
     {
-        public:void Move(Vector2D amouunt);
+        public:void Move(Vector2D amount);
             void MoveTo(Vector2D position);
-            void Rotate(float amouunt);
+            void Rotate(float amount);
             void RotateTo(float angle);
             void SetFillColor(sf::Color color);
             void SetOutlineColor(sf::Color color);
@@ -45,7 +45,7 @@ namespace plain{
             Body();
             
 		    virtual void Draw(sf::RenderWindow&) = 0;
-            virtual Vector2D* GetTransformedVertices() = 0;
+            virtual std::list<Vector2D> GetTransformedVertices() = 0;
     };
 
 }

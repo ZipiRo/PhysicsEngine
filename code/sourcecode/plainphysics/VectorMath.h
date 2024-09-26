@@ -10,6 +10,8 @@ namespace plain
         float DotProduct(Vector2D a, Vector2D b);
         float CrossProduct(Vector2D a, Vector2D b);
 
+        bool NAN_Values(Vector2D v);
+
         Vector2D VectorTransformZ(Vector2D v, transform::Transform transform);
 
         Vector2D sfmlVector2DtoVector2D(sf::Vector2f v);

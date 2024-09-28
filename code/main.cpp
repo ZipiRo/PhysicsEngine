@@ -134,7 +134,7 @@ void Update(float delta)
     {
         Body* bodyA = *body_it;
 
-        for(auto body_jt = ++bodyList.begin(); body_jt != bodyList.end(); ++body_jt)
+        for(auto body_jt = body_it; body_jt != bodyList.end(); ++body_jt)
         {
             Body* bodyB = *body_jt;
 

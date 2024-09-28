@@ -11,10 +11,10 @@ using namespace plain;
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "PhysicsEngine");
 
-float FPS = 60.0f;
+float FPS = 61.0f;
 
 std::list<Body*> bodyList;
-int bodyC = 10;
+int bodyC = 5;
 
 void Start();
 void Update(float delta);
@@ -127,16 +127,16 @@ void Update(float delta)
     for(Body* body : bodyList)
     {
         body->SetOutlineColor(sf::Color::White);
-        // body->Rotate(45 * delta);
+        body->Rotate(-45 * delta);
     }
 
-    for(auto body_it = bodyList.begin(); body_it != --bodyList.end(); ++body_it)
+    for(auto body_it = bodyList.begin(), body_it_ = body_it; body_it != --bodyList.end(); ++body_it)
     {
-        Body* bodyA = *body_it;
+        Body* bodyA = *(body_it);    
 
-        for(auto body_jt = body_it; body_jt != bodyList.end(); ++body_jt)
+        for(auto body_jt = ++body_it_; body_jt != bodyList.end(); ++body_jt)
         {
-            Body* bodyB = *body_jt;
+            Body* bodyB = *(body_jt);
 
             // if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
             // {

@@ -26,8 +26,8 @@ namespace plain
     {
         for(auto vertex = verticesA.begin(); vertex != verticesA.end(); ++vertex)
         {
-            Vector2D vertexA = *vertex++;
-            Vector2D vertexB = (vertex == --verticesA.end()) ? verticesA.front() : *(vertex);
+            Vector2D vertexA = *(vertex);
+            Vector2D vertexB = *(++vertex);
 
             Vector2D edge = vertexB - vertexA;
             Vector2D axis = Vector2D(edge.y, -edge.x);
@@ -45,7 +45,7 @@ namespace plain
         for(auto vertex = verticesB.begin(); vertex != verticesB.end(); ++vertex)
         {
             Vector2D vertexA = *vertex++;
-            Vector2D vertexB = (vertex == --verticesB.end()) ? verticesB.front() : *(vertex);
+            Vector2D vertexB = *(++vertex);
 
             Vector2D edge = vertexB - vertexA;
             Vector2D axis = Vector2D(edge.y, -edge.x);

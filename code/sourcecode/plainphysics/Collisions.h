@@ -4,7 +4,7 @@ namespace plain
 {
     namespace collisions
     {
-        bool IntersectPolygons(std::list<Vector2D> verticesA, std::list<Vector2D> verticesB);
+        bool IntersectPolygons(std::list<Vector2D> verticesA, std::list<Vector2D> verticesB, Vector2D &normal, float &depth);
         bool IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
             Vector2D &normal, float &depth);
     }

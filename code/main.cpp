@@ -78,7 +78,7 @@ void Start()
  
     for(int i = 0; i < bodyC; i++)
     {
-        int shapeType = plain::CircleShape;
+        int shapeType = plain::RectangleShape;
 
         plain::Body *body;
 
@@ -88,7 +88,7 @@ void Start()
 
         if(shapeType == plain::RectangleShape)
         {
-            body = new body::Rectangle(20.0f, 20.0f, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
+            body = new body::Rectangle(25.0f, 25.0f, Vector2D(x, y), 2.0f, 0.5f, sf::Color::White, sf::Color::White, false);
         }
         else if(shapeType == plain::CircleShape)
         {
@@ -98,7 +98,7 @@ void Start()
         bodyList.push_back(body);
     }
 
-    bodyList.front()->SetFillColor(sf::Color::Black);
+    bodyList.front()->SetFillColor(sf::Color::Transparent);
 }
 
 void Update(float delta)
@@ -138,14 +138,9 @@ void Update(float delta)
         {
             Body* bodyB = *(body_jt);
 
-            // if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
-            // {
-            //     bodyA->SetOutlineColor(sf::Color::Red);
-            //     bodyB->SetOutlineColor(sf::Color::Red);
-            // }
-
             Vector2D normal; float depth;
-            if(collisions::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+            
+            if(collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices(), normal, depth))
             {
                 if(vectormath::NAN_Values(normal)) continue;
                 bodyA->SetOutlineColor(sf::Color::Red);
@@ -153,6 +148,15 @@ void Update(float delta)
                 bodyA->Move((normal * -1.0f) * depth / 2.0f);
                 bodyB->Move(normal * depth / 2.0f);
             }
+
+            // if(collisions::IntersectCircles(bodyA->position, bodyA->radius, bodyB->position, bodyB->radius, normal, depth))
+            // {
+            //     if(vectormath::NAN_Values(normal)) continue;
+            //     bodyA->SetOutlineColor(sf::Color::Red);
+            //     bodyB->SetOutlineColor(sf::Color::Red);
+            //     bodyA->Move((normal * -1.0f) * depth / 2.0f);
+            //     bodyB->Move(normal * depth / 2.0f);
+            // }
         }
     }
 }

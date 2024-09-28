@@ -1,4 +1,5 @@
 #include <SFML/System/Vector2.hpp>
+#include <cmath>
 #include <list>
 
 #include "Vector2D.h"
@@ -22,8 +23,24 @@ namespace plain
         }
     }
 
-    bool collisions::IntersectPolygons(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB)
+    Vector2D FindArithmeticMEan(std::list<Vector2D> vertices)
     {
+        float sumX = 0.0f, sumY = 0.0f;
+        
+        for(Vector2D v : vertices)
+        {
+            sumX += v.x;
+            sumY += v.y;
+        }
+
+        return Vector2D(sumX / (float)vertices.size(), sumY / (float)vertices.size());
+    }
+
+    bool collisions::IntersectPolygons(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, Vector2D &normal, float &depth)
+    {
+        normal = Vector2D().Zero();
+        depth = 1000000000.0f;
+
         for(auto vertex = verticesA.begin(); vertex != verticesA.end(); ++vertex)
         {
             Vector2D vertexA = *(vertex);
@@ -39,6 +56,14 @@ namespace plain
             if(minA >= maxB || minB >= maxA)
             {
                 return false;
+            }
+
+            float axisDepth = std::min(maxB - minA, maxA - minB);
+
+            if(axisDepth < depth) 
+            {
+                depth = axisDepth;
+                normal = axis;
             }
         }
 
@@ -58,6 +83,27 @@ namespace plain
             {
                 return false;
             }
+
+            float axisDepth = std::min(maxB - minA, maxA - minB);
+
+            if(axisDepth < depth) 
+            {
+                depth = axisDepth;
+                normal = axis;
+            }
+        }
+
+        depth /= vectormath::Length(normal);
+        normal = vectormath::Normalize(normal);
+
+        Vector2D centerA = FindArithmeticMEan(verticesA);
+        Vector2D centerB = FindArithmeticMEan(verticesB);
+
+        Vector2D direction = centerB - centerA;
+
+        if(vectormath::DotProduct(direction, normal) < 0.0f)
+        {
+            normal = (normal * -1.0f);
         }
 
         return true;

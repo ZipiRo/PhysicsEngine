@@ -10,7 +10,7 @@ namespace EngineUtils
         static void Relese();
         void Reset();
         float DeltaTime();
-        void TimeScale(float t = 1.0f);
+        void TimeScale(float t);
         float TimeScale();  
         void Tick();
 

@@ -11,7 +11,7 @@ endif
 all: compile create link clean
 
 compile:
-	@g++ -Isrc/include -c code/*.cpp
+	@g++ -Icode/sourcecode/plainengine -Icode/sourcecode/plainphysics -Isrc/include  -c code/*.cpp
 
 create:
 	@clib code/sourcecode/plainphysics lib/plainphysics libplain-physics.a

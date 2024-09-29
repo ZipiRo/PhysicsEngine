@@ -1,5 +1,5 @@
-#include "sourcecode/plainengine/PlainEngine.h"
-#include "sourcecode/plainphysics/PlainPhysics.h"
+#include <PlainEngine.h>
+#include <PlainPhysics.h>
 
 using namespace PlainEngine;
 using namespace PlainPhysics;
@@ -11,6 +11,7 @@ class Game : public Engine
         {
             w_Name = "PhysicsEngine 1.0";
             w_BackgroundColor = sf::Color::Black;
+
             maxFps = 60.0f;
         }
     
@@ -121,8 +122,6 @@ class Game : public Engine
                             bodyA->Move((normal * -1.0f) * depth / 2.0f);
                             bodyB->Move(normal * depth / 2.0f);
                         }
-                    
-
                 }
             }
         }   

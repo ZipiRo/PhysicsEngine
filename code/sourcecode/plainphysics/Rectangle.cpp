@@ -9,9 +9,38 @@
 #include "Body.h"
 #include "Rectangle.h"
 
-namespace plain 
+namespace PlainPhysics 
 {
-    body::Rectangle::Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
+    std::list<Vector2D> CreateRectangleVertices(float width, float heigth)
+    {
+        float left = -width / 2.0f;
+        float right = left + width;
+        float bottom = -heigth / 2.0f;
+        float top = bottom + heigth;
+
+        std::list<Vector2D> vertices;
+
+        vertices.push_back(Vector2D(left, top));
+        vertices.push_back(Vector2D(right, top));
+        vertices.push_back(Vector2D(right, bottom));
+        vertices.push_back(Vector2D(left, bottom));
+
+        return vertices;
+    }
+    
+    std::list<Vector2D> UpdateVertices(std::list<Vector2D> vertices, PlainPhysics::Vector2D position, float angle)
+    {
+        transform::Transform transform(position, angle);
+        
+        std::list<Vector2D> transformVertices;
+
+        for(Vector2D v : vertices)
+            transformVertices.push_back(vectormath::VectorTransformZ(v, transform));
+
+        return transformVertices;
+    }
+
+    Rectangle::Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
         this->linearVelocity = Vector2D().Zero();
@@ -46,7 +75,7 @@ namespace plain
         this->UPDATE_AABB = true;
     }
 
-    void body::Rectangle::Draw(sf::RenderWindow& window)
+    void Rectangle::Draw(sf::RenderWindow& window)
     {   
         this->GetTransformedVertices();
 
@@ -58,36 +87,7 @@ namespace plain
         this->UPDATE_VERTICES = false;
     }
 
-    std::list<Vector2D> body::CreateRectangleVertices(float width, float heigth)
-    {
-        float left = -width / 2.0f;
-        float right = left + width;
-        float bottom = -heigth / 2.0f;
-        float top = bottom + heigth;
-
-        std::list<Vector2D> vertices;
-
-        vertices.push_back(Vector2D(left, top));
-        vertices.push_back(Vector2D(right, top));
-        vertices.push_back(Vector2D(right, bottom));
-        vertices.push_back(Vector2D(left, bottom));
-
-        return vertices;
-    }
-
-    std::list<Vector2D> body::UpdateVertices(std::list<Vector2D> vertices, plain::Vector2D position, float angle)
-    {
-        transform::Transform transform(position, angle);
-        
-        std::list<Vector2D> transformVertices;
-
-        for(Vector2D v : vertices)
-            transformVertices.push_back(vectormath::VectorTransformZ(v, transform));
-
-        return transformVertices;
-    }
-
-    std::list<Vector2D> body::Rectangle::GetTransformedVertices()
+    std::list<Vector2D> Rectangle::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
         {

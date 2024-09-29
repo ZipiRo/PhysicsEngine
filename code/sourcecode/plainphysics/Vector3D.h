@@ -1,6 +1,6 @@
 #pragma once
 
-namespace plain{    
+namespace PlainPhysics{    
     class Vector3D {
         public:
             float x, y, z;

@@ -14,7 +14,6 @@ compile:
 	@g++ -Isrc/include -c code/*.cpp
 
 create:
-	@clib code/sourcecode/plainengine lib/plainengine libplain-engine.a
 	@clib code/sourcecode/plainphysics lib/plainphysics libplain-physics.a
 
 link:

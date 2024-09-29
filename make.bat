@@ -2,7 +2,7 @@
 setlocal
 
 set BUILD_TYPE = %1
-
+cls
 echo.
 if %1 == -r (
     echo [33mBUILDING RELEASE VERSION[0m

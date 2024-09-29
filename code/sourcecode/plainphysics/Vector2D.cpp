@@ -1,6 +1,6 @@
 #include "Vector2D.h"
 
-namespace plain
+namespace PlainPhysics
 {
     Vector2D::Vector2D() {
         this->x = 0;

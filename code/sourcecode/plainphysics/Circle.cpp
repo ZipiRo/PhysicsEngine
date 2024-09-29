@@ -9,9 +9,9 @@
 #include "Body.h"
 #include "Circle.h"
 
-namespace plain 
+namespace PlainPhysics 
 {
-    body::Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
+    Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
         this->linearVelocity = Vector2D().Zero();
@@ -40,7 +40,7 @@ namespace plain
         this->shape = &this->circleShape;
     }
 
-    void body::Circle::Draw(sf::RenderWindow& window)
+    void Circle::Draw(sf::RenderWindow& window)
     {
         this->circleShape.setPosition(vectormath::Vector2DtosfmlVector2D(this->position));
         this->circleShape.setRotation(this->angle);
@@ -48,7 +48,7 @@ namespace plain
         window.draw(this->circleShape);
     }
 
-    std::list<Vector2D> body::Circle::GetTransformedVertices()
+    std::list<Vector2D> Circle::GetTransformedVertices()
     {
         return std::list<Vector2D>();
     }

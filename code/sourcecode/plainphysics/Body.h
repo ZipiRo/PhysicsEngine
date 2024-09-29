@@ -1,15 +1,12 @@
 #pragma once
 
-namespace plain{
-    enum{
-        RectangleShape,
-        CircleShape,
-        Polygon
-    };
-
+namespace PlainPhysics
+{
     class Body
     {
-        public:void Move(Vector2D amount);
+        public:
+            enum { RectangleShape, CircleShape, Polygon };
+            void Move(Vector2D amount);
             void MoveTo(Vector2D position);
             void Rotate(float amount);
             void RotateTo(float angle);

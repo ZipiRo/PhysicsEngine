@@ -4,34 +4,34 @@
 #include "Vector2D.h"
 #include "Body.h"
 
-plain::Body::Body () {}
+PlainPhysics::Body::Body () {}
 
-void plain::Body::Move(plain::Vector2D amount) {
+void PlainPhysics::Body::Move(PlainPhysics::Vector2D amount) {
     this->position += amount;
     this->UPDATE_VERTICES = true;
 }
 
-void plain::Body::MoveTo(plain::Vector2D position) {
+void PlainPhysics::Body::MoveTo(PlainPhysics::Vector2D position) {
     this->position = position;
     this->UPDATE_VERTICES = true;
 }
 
-void plain::Body::Rotate(float amount) {
+void PlainPhysics::Body::Rotate(float amount) {
     this->angle += amount;
     this->UPDATE_VERTICES = true;
 }
 
-void plain::Body::RotateTo(float angle) {
+void PlainPhysics::Body::RotateTo(float angle) {
     this->angle = angle;
     this->UPDATE_VERTICES = true;
 }
 
-void plain::Body::SetFillColor(sf::Color color) {
+void PlainPhysics::Body::SetFillColor(sf::Color color) {
     this->fillColor = color;
     this->shape->setFillColor(this->fillColor);
 }
 
-void plain::Body::SetOutlineColor(sf::Color color) {
+void PlainPhysics::Body::SetOutlineColor(sf::Color color) {
     this->outlineColor = color;
     this->shape->setOutlineColor(this->outlineColor);
 }

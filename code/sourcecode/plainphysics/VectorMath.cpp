@@ -7,13 +7,13 @@
 #include "Transform.h"
 #include "VectorMath.h"
 
-namespace plain
+namespace PlainPhysics
 {
     Vector2D vectormath::sfmlVector2DtoVector2D(sf::Vector2f v) {
-        return plain::Vector2D(v.x, v.y);
+        return PlainPhysics::Vector2D(v.x, v.y);
     }
 
-    sf::Vector2f vectormath::Vector2DtosfmlVector2D(plain::Vector2D v) {
+    sf::Vector2f vectormath::Vector2DtosfmlVector2D(PlainPhysics::Vector2D v) {
         return sf::Vector2f(v.x, v.y);
     }
 
@@ -29,32 +29,32 @@ namespace plain
         return (std::isnan(v.x) && std::isnan(v.y));
     }
 
-    plain::Vector2D vectormath::VectorTransformZ(plain::Vector2D v, transform::Transform transform) {
-        return plain::Vector2D(transform.cos * v.x - transform.sin * v.y + transform.position.x, 
-                                transform.sin * v.x + transform.cos * v.y + transform.position.y);
+    PlainPhysics::Vector2D vectormath::VectorTransformZ(PlainPhysics::Vector2D v, transform::Transform transform) {
+        return PlainPhysics::Vector2D((transform.cos * v.x - transform.sin * v.y) + transform.position.x, 
+                                (transform.sin * v.x + transform.cos * v.y) + transform.position.y);
     }
 
-    float vectormath::Length(plain::Vector2D v) {
+    float vectormath::Length(PlainPhysics::Vector2D v) {
         return sqrt(v.x * v.x + v.y * v.y);
     }
 
-    float vectormath::Distance(plain::Vector2D a, plain::Vector2D b) {
+    float vectormath::Distance(PlainPhysics::Vector2D a, PlainPhysics::Vector2D b) {
         float dx = a.x - b.x;
         float dy = a.y - b.y;
 
         return sqrt(dx * dx + dy * dy);
     }
 
-    plain::Vector2D vectormath::Normalize(plain::Vector2D v) {
-        float len = vectormath::Length(v);
-        return plain::Vector2D(v.x / len, v.y / len);
+    PlainPhysics::Vector2D vectormath::Normalize(PlainPhysics::Vector2D v) {
+        float l = vectormath::Length(v);
+        return PlainPhysics::Vector2D(v.x / l, v.y / l);
     }
 
-    float vectormath::DotProduct(plain::Vector2D a, plain::Vector2D b) {
+    float vectormath::DotProduct(PlainPhysics::Vector2D a, PlainPhysics::Vector2D b) {
         return a.x * b.x + a.y * b.y;
     }
 
-    float vectormath::CrossProduct(plain::Vector2D a, plain::Vector2D b) {
+    float vectormath::CrossProduct(PlainPhysics::Vector2D a, PlainPhysics::Vector2D b) {
         return a.x * b.y - a.y * b.x;
     }
 }

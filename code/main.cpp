@@ -10,7 +10,7 @@ class Game : public Engine
         Game()
         {
             w_Name = "PhysicsEngine 1.0";
-            w_BackgroundColor = sf::Color(125, 125, 125);
+            w_BackgroundColor = sf::Color::Black;
 
             maxFps = 60.0f;
         }

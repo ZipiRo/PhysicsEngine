@@ -10,7 +10,7 @@ class Game : public Engine
         Game()
         {
             w_Name = "PhysicsEngine 1.0";
-            w_BackgroundColor = sf::Color::Black;
+            w_BackgroundColor = sf::Color(125, 125, 125);
 
             maxFps = 60.0f;
         }
@@ -18,7 +18,7 @@ class Game : public Engine
     private:
         Body* player;
         World world = World();
-        int bodyCount = 10;
+        int bodyCount = 5;
 
         void Create() override 
         {
@@ -26,14 +26,13 @@ class Game : public Engine
  
             for(int i = 0; i < bodyCount; i++)
             {
-                int shapeType = rand() % 2;
+                int shapeType = rand() % 3;
                 int isStatic = (!i) ? 0 : rand() % 2;
+                int x = 100 + rand() % (this->GetWidth() - 200 + 1);
+                int y = 100 + rand() % (this->GetHeigth() - 200 + 1);
+                int radius = 15 + rand() % (25 - 15 + 1);
 
                 Body *body;
-
-                int x = rand() % this->GetWidth();
-                int y = rand() % this->GetHeigth();
-                int radius = rand() % 15 + 10;
 
                 if(shapeType == Body::RectangleShape)
                 {
@@ -42,6 +41,11 @@ class Game : public Engine
                 else if(shapeType == Body::CircleShape)
                 {
                     body = new Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
+                }
+                else if(shapeType == Body::PolygonShape)
+                {
+                    int sides = 3 + rand() % (10 - 3 + 1);
+                    body = new Polygon(sides, radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
 
                 if(isStatic)
@@ -53,7 +57,7 @@ class Game : public Engine
             this->player = world.GetBody(1);
         }
 
-        float forceMagnitude = 50.0f;
+        float forceMagnitude = 10.0f;
 
         void Update(float delta) override 
         {

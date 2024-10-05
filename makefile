@@ -1,4 +1,13 @@
 DEBUG ?= 0
+CURRENTLD ?= 0
+
+STEPS = compile create link clean
+
+ifeq ($(CURRENTLD), 1)
+	STEPS = compile link clean
+else
+	STEPS = compile create link clean
+endif
 
 ifeq ($(DEBUG), 1)
     LDFLAGS += -Lsrc/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -lsfml-audio-d
@@ -8,7 +17,7 @@ else
     EXETYPE = release
 endif
 
-all: compile create link clean
+all: $(STEPS)
 
 compile:
 	@g++ -Icode/sourcecode/plainengine -Icode/sourcecode/plainphysics -Isrc/include  -c code/*.cpp

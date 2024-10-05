@@ -7,5 +7,6 @@
 #include "Body.h"
 #include "Circle.h"
 #include "Rectangle.h"
+#include "Polygon.h"
 #include "Collisions.h"
 #include "World.h"

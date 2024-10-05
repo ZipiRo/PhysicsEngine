@@ -28,7 +28,7 @@ namespace PlainPhysics
         return vertices;
     }
     
-    std::list<Vector2D> UpdateVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
+    std::list<Vector2D> UpdateRectangleVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
     {
         std::list<Vector2D> transformVertices;
 
@@ -81,7 +81,7 @@ namespace PlainPhysics
     void Rectangle::Draw(sf::RenderWindow& window)
     {   
         if(this->UPDATE_VERTICES)
-            this->transformVertices = UpdateVertices(this->vertices, this->position, this->angle);
+            this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);
 
         this->rectangleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->rectangleShape.setRotation(this->angle);
@@ -94,7 +94,7 @@ namespace PlainPhysics
     std::list<Vector2D> Rectangle::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
-            this->transformVertices = UpdateVertices(this->vertices, this->position, this->angle);
+            this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);
 
         this->UPDATE_VERTICES = false;
         return this->transformVertices;

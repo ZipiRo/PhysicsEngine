@@ -65,7 +65,7 @@ namespace PlainPhysics
         this->transformVertices = this->vertices;
 
         this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
-        this->rectangleShape.setOrigin(sf::Vector2f(width / 2.0f, height / 2.0f));
+        this->rectangleShape.setOrigin(sf::Vector2f(this->width / 2, this->height / 2));
         this->rectangleShape.setFillColor(this->fillColor);
         this->rectangleShape.setOutlineColor(this->outlineColor);
         this->rectangleShape.setOutlineThickness(1);

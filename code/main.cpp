@@ -18,7 +18,7 @@ class Game : public Engine
     private:
         Body* player;
         World world = World();
-        int bodyCount = 200;
+        int bodyCount = 10;
 
         void Create() override 
         {
@@ -27,7 +27,8 @@ class Game : public Engine
             for(int i = 0; i < bodyCount; i++)
             {
                 int shapeType = rand() % 2;
-                
+                int isStatic = (!i) ? 0 : rand() % 2;
+
                 Body *body;
 
                 int x = rand() % this->GetWidth();
@@ -36,18 +37,23 @@ class Game : public Engine
 
                 if(shapeType == Body::RectangleShape)
                 {
-                    body = new Rectangle(radius + 10, radius + 10, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, false);
+                    body = new Rectangle(radius + 10, radius + 10, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
                 else if(shapeType == Body::CircleShape)
                 {
-                    body = new Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, false);
+                    body = new Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
+
+                if(isStatic)
+                    body->SetFillColor(sf::Color::White);
 
                 this->world.AddBody(body);
             }
 
-            player = world.GetBody(1);
+            this->player = world.GetBody(1);
         }
+
+        float forceMagnitude = 50.0f;
 
         void Update(float delta) override 
         {
@@ -74,20 +80,20 @@ class Game : public Engine
 
             if(direction.x != 0 || direction.y != 0)
             {
-                direction = VectorMath::Normalize(direction);
-                PlainPhysics::Vector2D velocity = direction * 200.0f * delta;
+                Vector2D forceDirection = VectorMath::Normalize(direction);
+                Vector2D force = forceDirection * forceMagnitude * 10000.0f;
 
-                this->player->Move(velocity);
+                this->player->AddForce(force);
             }   
 
-            world.Step(delta);
+            this->world.Step(delta);
         }  
 
         void Draw(sf::RenderWindow& window) override
         {   
             for(int i = 1; i <= this->world.BodyCount(); i++)
             {
-                world.GetBody(i)->Draw(window);
+                this->world.GetBody(i)->Draw(window);
             }
         }
 };
@@ -95,6 +101,6 @@ class Game : public Engine
 int main()
 {
     Game game;
-    game.Construct(800, 600);
+    game.Construct(1240, 720);
     game.Start();
 }

@@ -10,8 +10,11 @@ namespace PlainPhysics
             void MoveTo(Vector2D position);
             void Rotate(float amount);
             void RotateTo(float angle);
+            void AddForce(Vector2D amount);
+
             void SetFillColor(sf::Color color);
             void SetOutlineColor(sf::Color color);
+            void SetStatic(bool isStatic);
             void Step(float delta);
             
             Vector2D position;
@@ -19,9 +22,12 @@ namespace PlainPhysics
             float angle;
             float angularVelocity;
 
+            Vector2D force;
+
             float surface;
             float density;
             float mass;
+            float invMass;
             float restitution;
             float area;
 

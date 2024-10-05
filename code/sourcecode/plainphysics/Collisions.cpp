@@ -103,7 +103,7 @@ namespace PlainPhysics
             Vector2D vertexB = *next_vertex;
 
             Vector2D edge = vertexB - vertexA;
-            axis = Vector2D(-edge.y, edge.x);
+            axis = Vector2D(edge.y, -edge.x);
             axis = VectorMath::Normalize(axis);
 
             ProjectVertices(verticesA, axis, minA, maxA);
@@ -133,7 +133,7 @@ namespace PlainPhysics
             Vector2D vertexB = *next_vertex;
 
             Vector2D edge = vertexB - vertexA;
-            axis = Vector2D(-edge.y, edge.x);
+            axis = Vector2D(edge.y, -edge.x);
             axis = VectorMath::Normalize(axis);
 
             ProjectVertices(verticesA, axis, minA, maxA);
@@ -157,7 +157,7 @@ namespace PlainPhysics
 
         if(VectorMath::DotProduct(direction, normal) < 0.0f)
         {
-            normal = normal * -1.0f;
+            normal = -normal;
         }
 
         return true;
@@ -232,7 +232,7 @@ namespace PlainPhysics
 
         if(VectorMath::DotProduct(direction, normal) < 0.0f)
         {
-            normal = (normal * -1.0f);
+            normal = -normal;
         }
 
         return true;

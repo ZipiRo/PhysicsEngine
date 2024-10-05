@@ -47,11 +47,14 @@ namespace PlainPhysics
         this->angle = 0.0f;
         this->angularVelocity = 0.0f;
 
+        this->force = Vector2D(0, 0);
+
         this->width = width;
         this->height = height;
         this->surface = this->width * this->height;
         this->density = density;
         this->mass = isStatic ? 1000000.0f : this->surface * this->density;
+        this->invMass = 1.0f / mass;
         this->restitution = restitution;
 
         this->fillColor = fillColor;

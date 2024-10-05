@@ -20,6 +20,10 @@ namespace PlainPhysics
         return *this;
     }
 
+    Vector2D Vector2D::operator-() const {
+        return Vector2D(-this->x, -this->y);
+    }
+
     Vector2D Vector2D::operator+ (const Vector2D b) const {
         return Vector2D(this->x + b.x, this->y + b.y);
     }
@@ -28,10 +32,18 @@ namespace PlainPhysics
         return Vector2D(this->x - b.x, this->y - b.y);
     }
 
+    Vector2D operator* (float scalar, const Vector2D& a) {
+        return Vector2D(scalar * a.x, scalar * a.y);
+    }
+
+    Vector2D operator/ (float scalar, const Vector2D& a) {
+        return Vector2D(scalar / a.x, scalar / a.y);
+    }
+
     Vector2D Vector2D::operator* (float scalar) const {
         return Vector2D(this->x * scalar, this->y * scalar);
     }
-
+    
     Vector2D Vector2D::operator/ (float scalar) const {
         return Vector2D(this->x / scalar, this->y / scalar);
     }

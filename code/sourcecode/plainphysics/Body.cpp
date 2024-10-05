@@ -28,6 +28,10 @@ namespace PlainPhysics
         this->UPDATE_VERTICES = true;
     }
 
+    void Body::AddForce(Vector2D amount) {
+        this->force = amount;
+    }
+
     void Body::SetFillColor(sf::Color color) {
         this->fillColor = color;
         this->shape->setFillColor(this->fillColor);
@@ -38,10 +42,33 @@ namespace PlainPhysics
         this->shape->setOutlineColor(this->outlineColor);
     }
 
+    void Body::SetStatic(bool isStatic) {
+        this->isStatic = isStatic;
+
+        if(!isStatic) 
+        {
+            this->mass = this->surface * this->density;
+        }
+        else 
+        {
+            this->mass = 1000000.0f;
+        }
+
+        this->invMass = 1.0f / this->mass;
+    }
+
     void Body::Step(float delta) {
+        if(this->isStatic) return;
+        
+        Vector2D acceleration = this->force / this->mass;
+
+        this->linearVelocity += acceleration * delta;
         this->position += this->linearVelocity * delta;
+
         this->angle += this->angularVelocity * delta;
         
+        this->force = Vector2D(0, 0);
+
         this->UPDATE_VERTICES = true;
     }
 }

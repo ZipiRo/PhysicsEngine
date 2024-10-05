@@ -45,6 +45,23 @@ namespace PlainPhysics
         return NULL;
     }
 
+    void ResolveCollisionBasic(Body* bodyA, Body* bodyB, Vector2D normal, float depth)
+    {
+        Vector2D relativeVelocity = bodyB->linearVelocity - bodyA->linearVelocity;
+
+        if(VectorMath::DotProduct(relativeVelocity, normal) > 0.0f) return;
+
+        float e = std::min(bodyA->restitution, bodyB->restitution);
+
+        float j = -(1 + e) * VectorMath::DotProduct(relativeVelocity, normal);
+        j = j / (bodyA->invMass + bodyB->invMass); 
+
+        Vector2D impulse = j * normal;
+
+        bodyA->linearVelocity += -impulse * bodyA->invMass;
+        bodyB->linearVelocity += impulse * bodyB->invMass;
+    }
+
     bool Collide(Body* bodyA, Body* bodyB, Vector2D& normal, float& depth)
     {
         normal = Vector2D(0, 0);
@@ -98,10 +115,26 @@ namespace PlainPhysics
                 Vector2D normal; float depth;
                 if(Collide(bodyA, bodyB, normal, depth))
                 {
+                    if(VectorMath::NAN_Values(normal)) continue;
+
+                    if(bodyA->isStatic)
+                    {
+                        bodyB->Move(normal * depth);
+                    }
+                    else if(bodyB->isStatic)
+                    {
+                        bodyA->Move(-normal * depth);
+                    }
+                    else 
+                    {
+                        bodyA->Move(-normal * depth / 2.0f);
+                        bodyB->Move(normal * depth / 2.0f);
+                    }
+                    
                     bodyA->SetOutlineColor(sf::Color::Red);
                     bodyB->SetOutlineColor(sf::Color::Red);
-                    bodyA->Move((normal * -1) * depth / 2.0f);
-                    bodyB->Move(normal * depth / 2.0f);
+
+                    ResolveCollisionBasic(bodyA, bodyB, normal, depth);
                 }
             }
         }

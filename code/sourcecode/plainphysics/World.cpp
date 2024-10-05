@@ -67,9 +67,9 @@ namespace PlainPhysics
         normal = Vector2D(0, 0);
         depth = 0.0f;
 
-        if(bodyA->shapeType == Body::RectangleShape || bodyA->shapeType == Body::PolygonShape)
+        if(bodyA->shapeType == Body::RectangleShape || bodyA->shapeType == Body::RegulatedPolygon)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::PolygonShape)
+            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygon)
             {
                 return Collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyA->position, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }
@@ -83,7 +83,7 @@ namespace PlainPhysics
         }
         else if(bodyA->shapeType == Body::CircleShape)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::PolygonShape)
+            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygon)
             {
                 return Collisions::IntersectCirclesPolygons(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }

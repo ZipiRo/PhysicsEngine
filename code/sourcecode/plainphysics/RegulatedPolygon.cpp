@@ -8,11 +8,11 @@
 #include "Transform.h"
 #include "VectorMath.h"
 #include "Body.h"
-#include "Polygon.h"
+#include "RegulatedPolygon.h"
 
 namespace PlainPhysics 
 {
-    std::list<Vector2D> CreatePolygonVertices(int sides, float radius)
+    std::list<Vector2D> CreateRegulatedPolygonVertices(int sides, float radius)
     {
         std::list<Vector2D> vertices;
 
@@ -31,7 +31,7 @@ namespace PlainPhysics
         return vertices;
     }
     
-    std::list<Vector2D> UpdatePolygonVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
+    std::list<Vector2D> UpdateRegulatedPolygonVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
     {
         std::list<Vector2D> transformVertices;
 
@@ -43,7 +43,7 @@ namespace PlainPhysics
         return transformVertices;
     }
 
-    Polygon::Polygon (int sides, float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
+    RegulatedPolygon::RegulatedPolygon (int sides, float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
         this->linearVelocity = Vector2D(0, 0);
@@ -65,9 +65,9 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->shapeType = Body::PolygonShape;
+        this->shapeType = Body::RegulatedPolygon;
 
-        this->vertices = CreatePolygonVertices(sides, radius);
+        this->vertices = CreateRegulatedPolygonVertices(sides, radius);
         this->transformVertices = this->vertices;
 
         this->polygonShape = sf::ConvexShape(sides);
@@ -85,10 +85,10 @@ namespace PlainPhysics
         this->UPDATE_AABB = true;
     }
 
-    void Polygon::Draw(sf::RenderWindow& window)
+    void RegulatedPolygon::Draw(sf::RenderWindow& window)
     {   
         if(this->UPDATE_VERTICES)
-            this->transformVertices = UpdatePolygonVertices(this->vertices, this->position, this->angle);
+            this->transformVertices = UpdateRegulatedPolygonVertices(this->vertices, this->position, this->angle);
 
         this->polygonShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->polygonShape.setRotation(this->angle);
@@ -98,10 +98,10 @@ namespace PlainPhysics
         this->UPDATE_VERTICES = false;
     }
 
-    std::list<Vector2D> Polygon::GetTransformedVertices()
+    std::list<Vector2D> RegulatedPolygon::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
-            this->transformVertices = UpdatePolygonVertices(this->vertices, this->position, this->angle);
+            this->transformVertices = UpdateRegulatedPolygonVertices(this->vertices, this->position, this->angle);
 
         this->UPDATE_VERTICES = false;
         return this->transformVertices;

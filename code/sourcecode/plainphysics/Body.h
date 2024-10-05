@@ -5,7 +5,7 @@ namespace PlainPhysics
     class Body
     {
         public:
-            enum { RectangleShape, CircleShape, PolygonShape};
+            enum { RectangleShape, CircleShape, RegulatedPolygon};
             void Move(Vector2D amount);
             void MoveTo(Vector2D position);
             void Rotate(float amount);

@@ -36,16 +36,16 @@ class Game : public Engine
 
                 if(shapeType == Body::RectangleShape)
                 {
-                    body = new Rectangle(radius + 10, radius + 10, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
+                    body = new Rectangle(radius + 10, radius + 10, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
                 else if(shapeType == Body::CircleShape)
                 {
-                    body = new Circle(radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
+                    body = new Circle(radius, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
-                else if(shapeType == Body::PolygonShape)
+                else if(shapeType == Body::RegulatedPolygon)
                 {
                     int sides = 3 + rand() % (10 - 3 + 1);
-                    body = new Polygon(sides, radius, Vector2D(x, y), 2.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
+                    body = new RegulatedPolygon(sides, radius, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
                 }
 
                 if(isStatic)

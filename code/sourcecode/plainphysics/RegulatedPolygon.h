@@ -1,9 +1,9 @@
 namespace PlainPhysics
 {
-    class Polygon : public Body
+    class RegulatedPolygon : public Body
     {
         public:
-            Polygon (int sides, float scale, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
+            RegulatedPolygon (int sides, float scale, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
             
             void Draw(sf::RenderWindow& window) override;
             std::list<Vector2D> GetTransformedVertices() override;

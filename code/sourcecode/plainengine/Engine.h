@@ -10,6 +10,7 @@ namespace PlainEngine
         sf::RenderWindow* window;
         sf::Event* event;
         EngineUtils::Timer* timer;
+        
     public:
         virtual void Create() = 0;
         virtual void Update(float) = 0;

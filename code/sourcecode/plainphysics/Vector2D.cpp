@@ -60,10 +60,6 @@ namespace PlainPhysics
         return *this;
     }
 
-    Vector2D Vector2D::Zero () {
-        return Vector2D(0, 0);
-    }
-
     Vector2D multipyVector2D(const Vector2D a, const Vector2D b) {
         return Vector2D(a.x * b.x, a.y * b.y);
     }

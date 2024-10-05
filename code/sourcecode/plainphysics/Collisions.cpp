@@ -1,4 +1,3 @@
-#include <SFML/System/Vector2.hpp>
 #include <cmath>
 #include <list>
 
@@ -7,31 +6,35 @@
 #include "VectorMath.h"
 #include "Collisions.h"
 
+const float max_float = 1000000.0f;
+const float min_float = -1000000.0f;
+
 namespace PlainPhysics 
 {
     void ProjectVertices(std::list<Vector2D>vertices, Vector2D axis, float& min, float& max)
     {
-        min = 1000000.000f;
-		max = -1000000.000f;
+        min = max_float;
+		max = min_float;
 
-        for (Vector2D v : vertices)
+        for (Vector2D vertex : vertices)
         {
-            float projection = vectormath::DotProduct(v, axis);
+            float projection = VectorMath::DotProduct(vertex, axis);
             
             if(projection < min) min = projection;
             if(projection > max) max = projection;   
         }
     }
+
     void ProjectCircle(Vector2D center, float radius, Vector2D axis, float& min, float& max)
     {
-        Vector2D direction = vectormath::Normalize(axis);
+        Vector2D direction = VectorMath::Normalize(axis);
         Vector2D directionRadius = direction * radius;
 
         Vector2D point1 = center + directionRadius;
         Vector2D point2 = center - directionRadius;
 
-        min = vectormath::DotProduct(point1, axis);
-        max = vectormath::DotProduct(point2, axis);
+        min = VectorMath::DotProduct(point1, axis);
+        max = VectorMath::DotProduct(point2, axis);
 
         if(min > max)
         {
@@ -43,13 +46,13 @@ namespace PlainPhysics
     int ClosestPointOnPolygon(Vector2D center, std::list<Vector2D> vertices)
     {
         int result = -1, i = 0;
-        float minDistance = 1000000.000f;
+        float minDistance = max_float;
 
 
-        for(Vector2D v : vertices)
+        for(Vector2D vertex : vertices)
         {
             i++;
-            float distance = vectormath::Distance(v, center);
+            float distance = VectorMath::Distance(vertex, center);
 
             if(distance < minDistance)
             {
@@ -61,13 +64,13 @@ namespace PlainPhysics
         return result;
     }
     
-    bool collisions::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
+    bool Collisions::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
             Vector2D &normal, float &depth) 
     {
-        normal = Vector2D().Zero();
+        normal = Vector2D(0, 0);
         depth = 0.0f;
 
-        float distance = vectormath::Distance(centerA, centerB);
+        float distance = VectorMath::Distance(centerA, centerB);
         float radiI = radiusA + radiusB;
 
         if(distance >= radiI)
@@ -75,28 +78,34 @@ namespace PlainPhysics
             return false;
         }
 
-        normal = vectormath::Normalize(centerB - centerA);
+        normal = VectorMath::Normalize(centerB - centerA);
         depth = radiI - distance;
 
         return true;
     }
 
-    bool collisions::IntersectPolygons(std::list<Vector2D>verticesA, Vector2D centerA, std::list<Vector2D>verticesB, Vector2D centerB, 
+    bool Collisions::IntersectPolygons(std::list<Vector2D>verticesA, Vector2D centerA, std::list<Vector2D>verticesB, Vector2D centerB, 
         Vector2D &normal, float &depth)
     {
-        normal = Vector2D().Zero();
-        depth = 1000000.0f;
-
+        normal = Vector2D(0, 0);
+        depth = max_float;
+        
+        Vector2D axis = Vector2D(0, 0);
+        float minA, minB, maxA, maxB;
+        
         for(auto vertex = verticesA.begin(); vertex != verticesA.end(); ++vertex)
         {
-            Vector2D vertexA = *(vertex);
-            Vector2D vertexB = *(++vertex);
+            auto next_vertex = std::next(vertex);
+            if(next_vertex == verticesA.end())
+                next_vertex = verticesA.begin(); 
+
+            Vector2D vertexA = *vertex;
+            Vector2D vertexB = *next_vertex;
 
             Vector2D edge = vertexB - vertexA;
-            Vector2D axis = Vector2D(-edge.y, edge.x);
-            axis = vectormath::Normalize(axis);
+            axis = Vector2D(-edge.y, edge.x);
+            axis = VectorMath::Normalize(axis);
 
-            float minA, minB, maxA, maxB;
             ProjectVertices(verticesA, axis, minA, maxA);
             ProjectVertices(verticesB, axis, minB, maxB);
 
@@ -116,14 +125,17 @@ namespace PlainPhysics
 
         for(auto vertex = verticesB.begin(); vertex != verticesB.end(); ++vertex)
         {
-            Vector2D vertexA = *vertex++;
-            Vector2D vertexB = *(++vertex);
+            auto next_vertex = std::next(vertex);
+            if(next_vertex == verticesA.end())
+                next_vertex = verticesA.begin(); 
+
+            Vector2D vertexA = *vertex;
+            Vector2D vertexB = *next_vertex;
 
             Vector2D edge = vertexB - vertexA;
-            Vector2D axis = Vector2D(-edge.y, edge.x);
-            axis = vectormath::Normalize(axis);
+            axis = Vector2D(-edge.y, edge.x);
+            axis = VectorMath::Normalize(axis);
 
-            float minA, minB, maxA, maxB;
             ProjectVertices(verticesA, axis, minA, maxA);
             ProjectVertices(verticesB, axis, minB, maxB);
 
@@ -143,30 +155,37 @@ namespace PlainPhysics
 
         Vector2D direction = centerB - centerA;
 
-        if(vectormath::DotProduct(direction, normal) < 0.0f)
+        if(VectorMath::DotProduct(direction, normal) < 0.0f)
         {
-            normal = (normal * -1.0f);
+            normal = normal * -1.0f;
         }
 
         return true;
     }
 
-    bool collisions::IntersectCirclesPolygons(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter,
+    bool Collisions::IntersectCirclesPolygons(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter,
         Vector2D &normal, float &depth)
     {
-        normal = Vector2D().Zero();
-        depth = 1000000.000f;
+        normal = Vector2D(0, 0);
+        depth = max_float;
+
+        Vector2D axis = Vector2D(0, 0);
+        float minA, minB, maxA, maxB;
 
         for(auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex)
         {
-            Vector2D vertexA = *(vertex);
-            Vector2D vertexB = *(++vertex);
+            
+            auto next_vertex = std::next(vertex);
+            if(next_vertex == vertices.end())
+                next_vertex = vertices.begin(); 
+
+            Vector2D vertexA = *vertex;
+            Vector2D vertexB = *next_vertex;
 
             Vector2D edge = vertexB - vertexA;
-            Vector2D axis = Vector2D(-edge.y, edge.x);
-            axis = vectormath::Normalize(axis);
+            axis = Vector2D(edge.y, -edge.x);
+            axis = VectorMath::Normalize(axis);
 
-            float minA, minB, maxA, maxB;
             ProjectVertices(vertices, axis, minA, maxA);
             ProjectCircle(circleCenter, radius, axis, minB, maxB);
 
@@ -190,10 +209,9 @@ namespace PlainPhysics
         for(Vector2D v : vertices)
             if(closestPoint_Index == ++index) { closestPoint = v; break; }
 
-        Vector2D axis = closestPoint - circleCenter;
-        axis = vectormath::Normalize(axis);
+        axis = closestPoint - circleCenter;
+        axis = VectorMath::Normalize(axis);
 
-        float minA, minB, maxA, maxB;
         ProjectVertices(vertices, axis, minA, maxA);
         ProjectCircle(circleCenter, radius, axis, minB, maxB);
 
@@ -212,7 +230,7 @@ namespace PlainPhysics
 
         Vector2D direction = polygonCenter - circleCenter;
 
-        if(vectormath::DotProduct(direction, normal) < 0.0f)
+        if(VectorMath::DotProduct(direction, normal) < 0.0f)
         {
             normal = (normal * -1.0f);
         }

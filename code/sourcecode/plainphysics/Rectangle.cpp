@@ -11,14 +11,14 @@
 
 namespace PlainPhysics 
 {
-    std::list<Vector2D> CreateRectangleVertices(float width, float heigth)
+    std::list<Vector2D> CreateRectangleVertices(float width, float height)
     {
+        std::list<Vector2D> vertices;
+
         float left = -width / 2.0f;
         float right = left + width;
-        float bottom = -heigth / 2.0f;
-        float top = bottom + heigth;
-
-        std::list<Vector2D> vertices;
+        float bottom = -height / 2.0f;
+        float top = bottom + height;
 
         vertices.push_back(Vector2D(left, top));
         vertices.push_back(Vector2D(right, top));
@@ -28,14 +28,14 @@ namespace PlainPhysics
         return vertices;
     }
     
-    std::list<Vector2D> UpdateVertices(std::list<Vector2D> vertices, PlainPhysics::Vector2D position, float angle)
+    std::list<Vector2D> UpdateVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
     {
-        transform::Transform transform(position, angle);
-        
         std::list<Vector2D> transformVertices;
 
+        Transform transform(position, angle);
+
         for(Vector2D v : vertices)
-            transformVertices.push_back(vectormath::VectorTransformZ(v, transform));
+            transformVertices.push_back(VectorMath::VectorTransformZ(v, transform));
 
         return transformVertices;
     }
@@ -43,7 +43,7 @@ namespace PlainPhysics
     Rectangle::Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
-        this->linearVelocity = Vector2D().Zero();
+        this->linearVelocity = Vector2D(0, 0);
         this->angle = 0.0f;
         this->angularVelocity = 0.0f;
 
@@ -51,7 +51,7 @@ namespace PlainPhysics
         this->height = height;
         this->surface = this->width * this->height;
         this->density = density;
-        this->mass = this->surface * this->density;
+        this->mass = isStatic ? 1000000.0f : this->surface * this->density;
         this->restitution = restitution;
 
         this->fillColor = fillColor;
@@ -59,13 +59,13 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->type = RectangleShape;
+        this->shapeType = RectangleShape;
 
         this->vertices = CreateRectangleVertices(this->width, this->height);
         this->transformVertices = this->vertices;
 
         this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
-        this->rectangleShape.setOrigin(sf::Vector2f(width / 2, height / 2));
+        this->rectangleShape.setOrigin(sf::Vector2f(width / 2.0f, height / 2.0f));
         this->rectangleShape.setFillColor(this->fillColor);
         this->rectangleShape.setOutlineColor(this->outlineColor);
         this->rectangleShape.setOutlineThickness(1);
@@ -77,9 +77,10 @@ namespace PlainPhysics
 
     void Rectangle::Draw(sf::RenderWindow& window)
     {   
-        this->GetTransformedVertices();
+        if(this->UPDATE_VERTICES)
+            this->transformVertices = UpdateVertices(this->vertices, this->position, this->angle);
 
-        this->rectangleShape.setPosition(vectormath::Vector2DtosfmlVector2D(this->position));
+        this->rectangleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->rectangleShape.setRotation(this->angle);
 
         window.draw(this->rectangleShape);
@@ -90,9 +91,7 @@ namespace PlainPhysics
     std::list<Vector2D> Rectangle::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
-        {
             this->transformVertices = UpdateVertices(this->vertices, this->position, this->angle);
-        }
 
         this->UPDATE_VERTICES = false;
         return this->transformVertices;

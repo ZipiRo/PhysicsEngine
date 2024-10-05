@@ -4,34 +4,44 @@
 #include "Vector2D.h"
 #include "Body.h"
 
-PlainPhysics::Body::Body () {}
+namespace PlainPhysics
+{
+    Body::Body () {}
 
-void PlainPhysics::Body::Move(PlainPhysics::Vector2D amount) {
-    this->position += amount;
-    this->UPDATE_VERTICES = true;
-}
+    void Body::Move(Vector2D amount) {
+        this->position += amount;
+        this->UPDATE_VERTICES = true;
+    }
 
-void PlainPhysics::Body::MoveTo(PlainPhysics::Vector2D position) {
-    this->position = position;
-    this->UPDATE_VERTICES = true;
-}
+    void Body::MoveTo(Vector2D position) {
+        this->position = position;
+        this->UPDATE_VERTICES = true;
+    }
 
-void PlainPhysics::Body::Rotate(float amount) {
-    this->angle += amount;
-    this->UPDATE_VERTICES = true;
-}
+    void Body::Rotate(float amount) {
+        this->angle += amount;
+        this->UPDATE_VERTICES = true;
+    }
 
-void PlainPhysics::Body::RotateTo(float angle) {
-    this->angle = angle;
-    this->UPDATE_VERTICES = true;
-}
+    void Body::RotateTo(float angle) {
+        this->angle = angle;
+        this->UPDATE_VERTICES = true;
+    }
 
-void PlainPhysics::Body::SetFillColor(sf::Color color) {
-    this->fillColor = color;
-    this->shape->setFillColor(this->fillColor);
-}
+    void Body::SetFillColor(sf::Color color) {
+        this->fillColor = color;
+        this->shape->setFillColor(this->fillColor);
+    }
 
-void PlainPhysics::Body::SetOutlineColor(sf::Color color) {
-    this->outlineColor = color;
-    this->shape->setOutlineColor(this->outlineColor);
+    void Body::SetOutlineColor(sf::Color color) {
+        this->outlineColor = color;
+        this->shape->setOutlineColor(this->outlineColor);
+    }
+
+    void Body::Step(float delta) {
+        this->position += this->linearVelocity * delta;
+        this->angle += this->angularVelocity * delta;
+        
+        this->UPDATE_VERTICES = true;
+    }
 }

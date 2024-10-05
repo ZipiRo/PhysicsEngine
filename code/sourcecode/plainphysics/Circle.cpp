@@ -14,14 +14,14 @@ namespace PlainPhysics
     Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
-        this->linearVelocity = Vector2D().Zero();
+        this->linearVelocity = Vector2D(0, 0);
         this->angle = 0.0f;
         this->angularVelocity = 0.0f;
 
         this->radius = radius;
-        this->surface = this->radius * this->radius * 3.14159263f;
+        this->surface = this->radius * this->radius * 3.1415926f;
         this->density = density;
-        this->mass = this->surface * this->density;
+        this->mass = isStatic ? 1000000.0f : this->surface * this->density;
         this->restitution = restitution;
 
         this->fillColor = fillColor;
@@ -29,7 +29,7 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->type = CircleShape;
+        this->shapeType = CircleShape;
 
         this->circleShape = sf::CircleShape(this->radius);
         this->circleShape.setOrigin(sf::Vector2f(this->radius, this->radius));
@@ -42,7 +42,7 @@ namespace PlainPhysics
 
     void Circle::Draw(sf::RenderWindow& window)
     {
-        this->circleShape.setPosition(vectormath::Vector2DtosfmlVector2D(this->position));
+        this->circleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->circleShape.setRotation(this->angle);
 
         window.draw(this->circleShape);

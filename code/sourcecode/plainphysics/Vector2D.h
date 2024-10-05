@@ -2,6 +2,7 @@
 
 namespace PlainPhysics
 {
+
     class Vector2D {
         public:
             float x, y;
@@ -18,9 +19,8 @@ namespace PlainPhysics
             Vector2D &operator-= (const Vector2D& b);
             Vector2D &operator*= (float scalar);
             Vector2D &operator/= (float scalar);
-            Vector2D Zero();
     };
 
     Vector2D multipyVector2D(const Vector2D a, const Vector2D b);
-    Vector2D divideVector2D(const Vector2D a, const Vector2D b) ;
+    Vector2D divideVector2D(const Vector2D a, const Vector2D b);
 }

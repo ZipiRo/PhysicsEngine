@@ -12,7 +12,8 @@ namespace PlainPhysics
             void RotateTo(float angle);
             void SetFillColor(sf::Color color);
             void SetOutlineColor(sf::Color color);
-
+            void Step(float delta);
+            
             Vector2D position;
             Vector2D linearVelocity;
             float angle;
@@ -37,12 +38,11 @@ namespace PlainPhysics
             sf::Color outlineColor;
             sf::Shape* shape;
 
-            int type;
+            int shapeType;
 
             Body();
             
 		    virtual void Draw(sf::RenderWindow&) = 0;
             virtual std::list<Vector2D> GetTransformedVertices() = 0;
     };
-
 }

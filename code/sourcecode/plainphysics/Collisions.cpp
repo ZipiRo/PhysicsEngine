@@ -4,6 +4,7 @@
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
+#include "AABB.h"
 #include "Collisions.h"
 
 const float max_float = 1000000.0f;
@@ -64,6 +65,13 @@ namespace PlainPhysics
         return result;
     }
     
+    bool Collisions::IntersectAABB(AABB a, AABB b) {
+		if (a.max.x <= b.min.x || b.max.x <= a.min.x) return false;
+		if (a.max.y <= b.min.y || b.max.y <= a.min.y) return false;
+
+		return true;
+	}
+
     bool Collisions::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
             Vector2D &normal, float &depth) 
     {

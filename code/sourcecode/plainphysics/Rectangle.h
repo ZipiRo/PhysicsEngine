@@ -9,11 +9,14 @@ namespace PlainPhysics
             
             void Draw(sf::RenderWindow& window) override;
             std::list<Vector2D> GetTransformedVertices() override;
+            AABB GetAABB() override;
 
         private:
             sf::RectangleShape rectangleShape;
             
             std::list<Vector2D> vertices;
             std::list<Vector2D> transformVertices;
+            
+            AABB aabb;
     };
 }

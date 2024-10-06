@@ -4,6 +4,7 @@
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
+#include "AABB.h"
 #include "Body.h"
 #include "Circle.h"
 #include "Rectangle.h"
@@ -14,7 +15,7 @@ namespace PlainPhysics
 {
     World::World()
     {
-        this->gravity = Vector2D(0, 9.81f);
+        this->gravity = Vector2D(0, 98.1f);
         this->bodyList = std::list<Body *>();
     }
 
@@ -67,9 +68,9 @@ namespace PlainPhysics
         normal = Vector2D(0, 0);
         depth = 0.0f;
 
-        if(bodyA->shapeType == Body::RectangleShape || bodyA->shapeType == Body::RegulatedPolygon)
+        if(bodyA->shapeType == Body::RectangleShape || bodyA->shapeType == Body::RegulatedPolygonShape)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygon)
+            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygonShape)
             {
                 return Collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyA->position, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }
@@ -83,7 +84,7 @@ namespace PlainPhysics
         }
         else if(bodyA->shapeType == Body::CircleShape)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygon)
+            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygonShape)
             {
                 return Collisions::IntersectCirclesPolygons(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }
@@ -96,46 +97,51 @@ namespace PlainPhysics
         return false;
     }
 
-    void World::Step(float delta)
+    void World::Step(float delta, int totalItterations)
     {
-        for(Body* body : bodyList)
+        for(int currentIterartion = 0; currentIterartion < totalItterations; currentIterartion++)
         {
-            body->Step(delta);
-            body->SetOutlineColor(sf::Color::White);
-        }
-
-        for(auto body_it = bodyList.begin(), body_it_ = body_it; body_it != --bodyList.end(); ++body_it)
-        {
-            Body* bodyA = *(body_it);    
-
-            for(auto body_jt = ++body_it_; body_jt != bodyList.end(); ++body_jt)
+            for(Body* body : bodyList)
             {
-                Body* bodyB = *(body_jt);
-
-                Vector2D normal; float depth;
-                if(!Collide(bodyA, bodyB, normal, depth)) continue;;
-
-                if(VectorMath::NAN_Values(normal)) continue;
-
-                if(bodyA->isStatic)
-                {
-                    bodyB->Move(normal * depth);
-                }
-                else if(bodyB->isStatic)
-                {
-                    bodyA->Move(-normal * depth);
-                }
-                else 
-                {
-                    bodyA->Move(-normal * depth / 2.0f);
-                    bodyB->Move(normal * depth / 2.0f);
-                }
-                
-                bodyA->SetOutlineColor(sf::Color::Red);
-                bodyB->SetOutlineColor(sf::Color::Red);
-
-                ResolveCollisionBasic(bodyA, bodyB, normal, depth);
+                body->AddForce(body->mass * gravity);
+                body->Step(delta, totalItterations);
             }
-        }
+
+            for(auto body_it = bodyList.begin(), body_it_ = body_it; body_it != --bodyList.end(); ++body_it)
+            {
+                Body* bodyA = *(body_it);    
+                AABB bodyA_AABB = bodyA->GetAABB();
+
+                for(auto body_jt = ++body_it_; body_jt != bodyList.end(); ++body_jt)
+                {
+                    Body* bodyB = *(body_jt);
+                    AABB bodyB_AABB = bodyB->GetAABB();
+
+                    if(bodyA->isStatic && bodyB->isStatic) continue;
+                    if(!Collisions::IntersectAABB(bodyA_AABB, bodyB_AABB)) continue;
+
+                    Vector2D normal; float depth;
+                    if(!Collide(bodyA, bodyB, normal, depth)) continue;;
+
+                    if(VectorMath::NAN_Values(normal)) continue;
+
+                    if(bodyA->isStatic)
+                    {
+                        bodyB->Move(normal * depth);
+                    }
+                    else if(bodyB->isStatic)
+                    {
+                        bodyA->Move(-normal * depth);
+                    }
+                    else 
+                    {
+                        bodyA->Move(-normal * depth / 2.0f);
+                        bodyB->Move(normal * depth / 2.0f);
+                    }
+        
+                    ResolveCollisionBasic(bodyA, bodyB, normal, depth);
+                }
+            }
+        }        
     }
 }

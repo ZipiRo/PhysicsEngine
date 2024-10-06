@@ -9,8 +9,11 @@ namespace PlainPhysics
 
             void Draw(sf::RenderWindow&) override;
             std::list<Vector2D> GetTransformedVertices() override;
+            AABB GetAABB() override;
 
         private:
             sf::CircleShape circleShape;
+
+            AABB aabb;
     };
 }

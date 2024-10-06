@@ -7,8 +7,12 @@
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
+#include "AABB.h"
 #include "Body.h"
 #include "RegulatedPolygon.h"
+
+const float max_float = 1000000.0f;
+const float min_float = -1000000.0f;
 
 namespace PlainPhysics 
 {
@@ -29,6 +33,17 @@ namespace PlainPhysics
         }
 
         return vertices;
+    }
+
+    AABB UpdateRegulatedPolygonAABB(Vector2D position, float radius) 
+    {
+        float minX = position.x - radius;
+        float minY = position.y - radius;
+
+        float maxX = position.x + radius;
+        float maxY = position.y + radius;
+        
+        return AABB(minX, minY, maxX, maxY);
     }
     
     std::list<Vector2D> UpdateRegulatedPolygonVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
@@ -65,10 +80,12 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->shapeType = Body::RegulatedPolygon;
+        this->shapeType = Body::RegulatedPolygonShape;
 
         this->vertices = CreateRegulatedPolygonVertices(sides, radius);
         this->transformVertices = this->vertices;
+
+        this->aabb = UpdateRegulatedPolygonAABB(this->position, this->radius);
 
         this->polygonShape = sf::ConvexShape(sides);
 
@@ -90,6 +107,9 @@ namespace PlainPhysics
         if(this->UPDATE_VERTICES)
             this->transformVertices = UpdateRegulatedPolygonVertices(this->vertices, this->position, this->angle);
 
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateRegulatedPolygonAABB(this->position, this->radius);
+
         this->polygonShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->polygonShape.setRotation(this->angle);
 
@@ -105,5 +125,14 @@ namespace PlainPhysics
 
         this->UPDATE_VERTICES = false;
         return this->transformVertices;
-    }   
+    }  
+
+    AABB RegulatedPolygon::GetAABB()
+    {
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateRegulatedPolygonAABB(this->position, this->radius);
+
+        this->UPDATE_AABB = false;
+        return this->aabb;
+    } 
 }

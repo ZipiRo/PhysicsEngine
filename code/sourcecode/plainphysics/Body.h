@@ -5,7 +5,8 @@ namespace PlainPhysics
     class Body
     {
         public:
-            enum { RectangleShape, CircleShape, RegulatedPolygon};
+            enum { RectangleShape, CircleShape, RegulatedPolygonShape};
+
             void Move(Vector2D amount);
             void MoveTo(Vector2D position);
             void Rotate(float amount);
@@ -15,7 +16,7 @@ namespace PlainPhysics
             void SetFillColor(sf::Color color);
             void SetOutlineColor(sf::Color color);
             void SetStatic(bool isStatic);
-            void Step(float delta);
+            void Step(float delta, int totalItterations);
             
             Vector2D position;
             Vector2D linearVelocity;
@@ -50,5 +51,6 @@ namespace PlainPhysics
             
 		    virtual void Draw(sf::RenderWindow&) = 0;
             virtual std::list<Vector2D> GetTransformedVertices() = 0;
+            virtual AABB GetAABB() = 0;
     };
 }

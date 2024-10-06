@@ -10,87 +10,69 @@ class Game : public Engine
         Game()
         {
             w_Name = "PhysicsEngine 1.0";
-            w_BackgroundColor = sf::Color::Black;
+            w_BackgroundColor = sf::Color(30.0f, 129.0f, 176.0f);
 
-            maxFps = 60.0f;
+            maxFps = 9999.0f;
         }
     
     private:
-        Body* player;
         World world = World();
-        int bodyCount = 5;
+        bool lPressed = false;
+        int currentBody = Body::RectangleShape;
 
         void Create() override 
         {
-            srand(time(0));
- 
-            for(int i = 0; i < bodyCount; i++)
-            {
-                int shapeType = rand() % 3;
-                int isStatic = (!i) ? 0 : rand() % 2;
-                int x = 100 + rand() % (this->GetWidth() - 200 + 1);
-                int y = 100 + rand() % (this->GetHeigth() - 200 + 1);
-                int radius = 15 + rand() % (25 - 15 + 1);
-
-                Body *body;
-
-                if(shapeType == Body::RectangleShape)
-                {
-                    body = new Rectangle(radius + 10, radius + 10, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
-                }
-                else if(shapeType == Body::CircleShape)
-                {
-                    body = new Circle(radius, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
-                }
-                else if(shapeType == Body::RegulatedPolygon)
-                {
-                    int sides = 3 + rand() % (10 - 3 + 1);
-                    body = new RegulatedPolygon(sides, radius, Vector2D(x, y), 1.0f, 0.5f, sf::Color::Transparent, sf::Color::White, isStatic);
-                }
-
-                if(isStatic)
-                    body->SetFillColor(sf::Color::White);
-
-                this->world.AddBody(body);
-            }
-
-            this->player = world.GetBody(1);
+            Body *Ground = new Rectangle(780.0f, 100.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 200.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            world.AddBody(Ground);
         }
 
-        float forceMagnitude = 10.0f;
-
         void Update(float delta) override 
-        {
-            Vector2D direction;
-
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || 
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                direction.y--;
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || 
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                direction.y++;
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                direction.x--;
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || 
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                direction.x++;
-                
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-                this->player->Rotate(-45 * delta);
-
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::T))
-                this->player->Rotate(45 * delta);
-
-            if(direction.x != 0 || direction.y != 0)
+        {   
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
-                Vector2D forceDirection = VectorMath::Normalize(direction);
-                Vector2D force = forceDirection * forceMagnitude * 10000.0f;
+                if(!lPressed)
+                {
+                    CreateBody();
+                    lPressed = true;
+                }
+            }
+            else {
+                if(lPressed) lPressed = false;
+            }
 
-                this->player->AddForce(force);
-            }   
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+            {
+                currentBody = Body::RectangleShape;
+                std::cout << "CREATING RECTANGLES" << '\n';
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+            {
+                currentBody = Body::CircleShape;
+                std::cout << "CREATING CIRCLES" << '\n';
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+            {
+                currentBody = Body::RegulatedPolygonShape;
+                std::cout << "CREATING REGULATEDPOLYGONS" << '\n';
+            }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+            {
+                std::cout << "Bodyes:" << this->world.BodyCount() << '\n';
+            }
 
-            this->world.Step(delta);
+            this->world.Step(delta, 20);
+
+            float bottomWindow = this->GetWindowHeigth() + 200.0f;
+            for(int i = 1; i <= this->world.BodyCount(); i++)
+            {
+                Body *body = this->world.GetBody(i);
+                AABB aabb = body->GetAABB();
+
+                if(aabb.max.y > bottomWindow)
+                {
+                    this->world.RemoveBody(body);
+                }
+            }
         }  
 
         void Draw(sf::RenderWindow& window) override
@@ -98,6 +80,37 @@ class Game : public Engine
             for(int i = 1; i <= this->world.BodyCount(); i++)
             {
                 this->world.GetBody(i)->Draw(window);
+            }
+        }
+
+        void CreateBody()
+        {
+            int r = 0 + rand() % (255 - 0 + 1);
+            int g = 0 + rand() % (255 - 0 + 1);
+            int b = 0 + rand() % (255 - 0 + 1);
+
+            if(currentBody == Body::RectangleShape)
+            {
+                float width = 10 + rand() % (35 - 10 + 1);
+                float height = 10 + rand() % (35 - 10 + 1);
+
+                Body *body = new Rectangle(width, height, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+                this->world.AddBody(body);
+            }
+            else if(currentBody == Body::CircleShape)
+            {
+                float radius = 10 + rand() % (35 - 10 + 1);
+
+                Body *body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+                this->world.AddBody(body);
+            }
+            else if(currentBody == Body::RegulatedPolygonShape)
+            {
+                float sides = 3 + rand() % (6 - 10 + 1);
+                float radius = 10 + rand() % (35 - 10 + 1);
+
+                Body *body = new RegulatedPolygon(sides, radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+                this->world.AddBody(body);
             }
         }
 };

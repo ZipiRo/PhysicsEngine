@@ -2,6 +2,7 @@
 #include <list>
 
 #include "Vector2D.h"
+#include "AABB.h"
 #include "Body.h"
 
 namespace PlainPhysics
@@ -11,21 +12,25 @@ namespace PlainPhysics
     void Body::Move(Vector2D amount) {
         this->position += amount;
         this->UPDATE_VERTICES = true;
+        this->UPDATE_AABB = true;
     }
 
     void Body::MoveTo(Vector2D position) {
         this->position = position;
         this->UPDATE_VERTICES = true;
+        this->UPDATE_AABB = true;
     }
 
     void Body::Rotate(float amount) {
         this->angle += amount;
         this->UPDATE_VERTICES = true;
+        this->UPDATE_AABB = true;
     }
 
     void Body::RotateTo(float angle) {
         this->angle = angle;
         this->UPDATE_VERTICES = true;
+        this->UPDATE_AABB = true;
     }
 
     void Body::AddForce(Vector2D amount) {
@@ -57,9 +62,11 @@ namespace PlainPhysics
         this->invMass = 1.0f / this->mass;
     }
 
-    void Body::Step(float delta) {
+    void Body::Step(float delta, int totalItterations) {
         if(this->isStatic) return;
         
+        delta /= float(totalItterations);
+
         Vector2D acceleration = this->force / this->mass;
 
         this->linearVelocity += acceleration * delta;
@@ -70,5 +77,6 @@ namespace PlainPhysics
         this->force = Vector2D(0, 0);
 
         this->UPDATE_VERTICES = true;
+        this->UPDATE_AABB = true;
     }
 }

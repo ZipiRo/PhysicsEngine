@@ -6,8 +6,12 @@
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
+#include "AABB.h"
 #include "Body.h"
 #include "Rectangle.h"
+
+const float max_float = 1000000.0f;
+const float min_float = -1000000.0f;
 
 namespace PlainPhysics 
 {
@@ -26,6 +30,25 @@ namespace PlainPhysics
         vertices.push_back(Vector2D(left, bottom));
 
         return vertices;
+    }
+
+    AABB UpdateRegtangleAABB(std::list<Vector2D> vertices) 
+    {
+        float minX = max_float;
+        float minY = max_float;
+        float maxX = min_float;
+        float maxY = min_float;
+
+        for(Vector2D vertex : vertices)
+        {
+            if(vertex.x < minX) minX = vertex.x;
+            if(vertex.x > maxX) maxX = vertex.x;
+            
+            if(vertex.y < minY) minY = vertex.y;
+            if(vertex.y > maxY) maxY = vertex.y;
+        }
+
+        return AABB(minX, minY, maxX, maxY);
     }
     
     std::list<Vector2D> UpdateRectangleVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
@@ -67,6 +90,8 @@ namespace PlainPhysics
         this->vertices = CreateRectangleVertices(this->width, this->height);
         this->transformVertices = this->vertices;
 
+        this->aabb = UpdateRegtangleAABB(this->vertices);
+
         this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
         this->rectangleShape.setOrigin(sf::Vector2f(this->width / 2, this->height / 2));
         this->rectangleShape.setFillColor(this->fillColor);
@@ -82,6 +107,9 @@ namespace PlainPhysics
     {   
         if(this->UPDATE_VERTICES)
             this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);
+
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateRegtangleAABB(this->GetTransformedVertices());
 
         this->rectangleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->rectangleShape.setRotation(this->angle);
@@ -99,4 +127,13 @@ namespace PlainPhysics
         this->UPDATE_VERTICES = false;
         return this->transformVertices;
     }   
+
+    AABB Rectangle::GetAABB()
+    {
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateRegtangleAABB(this->GetTransformedVertices());
+
+        this->UPDATE_AABB = false;
+        return this->aabb;
+    }
 }

@@ -4,6 +4,7 @@ namespace PlainPhysics
 {
     namespace Collisions
     {
+        bool IntersectAABB(AABB a, AABB b);
         bool IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
             Vector2D &normal, float &depth);
         bool IntersectPolygons(std::list<Vector2D>verticesA, Vector2D centerA,  std::list<Vector2D>verticesB, Vector2D centerB, 

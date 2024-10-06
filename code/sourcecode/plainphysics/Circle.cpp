@@ -6,11 +6,23 @@
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
+#include "AABB.h"
 #include "Body.h"
 #include "Circle.h"
 
 namespace PlainPhysics 
 {
+    AABB UpdateCircleAABB(Vector2D position, float radius) 
+    {
+        float minX = position.x - radius;
+        float minY = position.y - radius;
+
+        float maxX = position.x + radius;
+        float maxY = position.y + radius;
+        
+        return AABB(minX, minY, maxX, maxY);
+    }
+
     Circle::Circle(float radius, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic)
     {
         this->position = position;
@@ -34,6 +46,8 @@ namespace PlainPhysics
 
         this->shapeType = CircleShape;
 
+        this->aabb = UpdateCircleAABB(this->position, this->radius);
+
         this->circleShape = sf::CircleShape(this->radius);
         this->circleShape.setOrigin(sf::Vector2f(this->radius, this->radius));
         this->circleShape.setFillColor(this->fillColor);
@@ -45,6 +59,9 @@ namespace PlainPhysics
 
     void Circle::Draw(sf::RenderWindow& window)
     {
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateCircleAABB(this->position, this->radius);
+
         this->circleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->circleShape.setRotation(this->angle);
 
@@ -54,5 +71,14 @@ namespace PlainPhysics
     std::list<Vector2D> Circle::GetTransformedVertices()
     {
         return std::list<Vector2D>();
+    }
+
+    AABB Circle::GetAABB()
+    {
+        if(this->UPDATE_AABB)
+            this->aabb = UpdateCircleAABB(this->position, this->radius);
+
+        this->UPDATE_AABB = false;
+        return this->aabb;
     }
 }

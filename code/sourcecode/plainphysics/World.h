@@ -10,7 +10,7 @@ namespace PlainPhysics{
             void AddBody(Body *body);
             void RemoveBody(Body *body);
             Body* GetBody(int index);
-            void Step(float delta);
+            void Step(float delta, int totalItterations);
 
         private:
             std::list<Body *> bodyList;

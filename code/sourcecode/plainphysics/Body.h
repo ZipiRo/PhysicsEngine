@@ -1,7 +1,16 @@
 #pragma once
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <list>
+
+#include "Vector2D.h"
+#include "AABB.h"
 
 namespace PlainPhysics
 {
+    const float INFINTE_MASS = 3.4028234e38f;
+
     class Body
     {
         public:

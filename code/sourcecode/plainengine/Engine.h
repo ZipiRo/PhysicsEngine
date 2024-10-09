@@ -7,7 +7,7 @@ namespace PlainEngine
         int height;
         float timeScale;
         
-        sf::RenderWindow *window;
+        sf::RenderWindow *Window;
 
         EngineUtils::Timer* timer;
     public:
@@ -21,12 +21,13 @@ namespace PlainEngine
         int GetWindowWidth();
         int GetWindowHeigth();
 
-        float maxFps;
-        std::string w_Name;
-        sf::Color w_BackgroundColor;
+        float maxFps = 60.0F;
+        std::string w_Name = "window";
+        sf::Color w_BackgroundColor = sf::Color::Black;
+        float viewZoomFactor = 1.0f;
 
-        sf::Event *event;
-        sf::View *viewport;
+        sf::Event *Event;
+        sf::View *ViewPort;
 
         sf::Vector2i mouseLocalPos;
         sf::Vector2f mouseWorldPos;

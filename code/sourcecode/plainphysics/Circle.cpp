@@ -1,13 +1,3 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <list>
-
-#include "Vector2D.h"
-#include "Transform.h"
-#include "VectorMath.h"
-#include "AABB.h"
-#include "Body.h"
 #include "Circle.h"
 
 namespace PlainPhysics 
@@ -35,7 +25,7 @@ namespace PlainPhysics
         this->radius = radius;
         this->surface = this->radius * this->radius * 3.1415926f;
         this->density = density;
-        this->mass = isStatic ? 1000000.0f : this->surface * this->density;
+        this->mass = isStatic ? INFINTE_MASS : this->surface * this->density;
         this->invMass = 1.0f / this->mass;
         this->restitution = restitution;
 

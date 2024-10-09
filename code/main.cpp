@@ -9,9 +9,9 @@ class Game : public Engine
     public:
         Game()
         {
-            w_Name = "PhysicsEngine 1.0";
+            w_Name = "PhysicsEngine v1.0";
             w_BackgroundColor = sf::Color(30.0f, 129.0f, 176.0f);
-
+            viewZoomFactor = 0.1f;
             maxFps = 9999.0f;
         }
     
@@ -22,7 +22,7 @@ class Game : public Engine
 
         void Create() override 
         {
-            Body *Ground = new Rectangle(780.0f, 100.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 200.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Body *Ground = new Rectangle(78.0f, 10.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 20.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
             world.AddBody(Ground);
         }
 
@@ -62,7 +62,7 @@ class Game : public Engine
 
             this->world.Step(delta, 20);
 
-            float bottomWindow = this->GetWindowHeigth() + 200.0f;
+            float bottomWindow = this->GetWindowHeigth();
             for(int i = 1; i <= this->world.BodyCount(); i++)
             {
                 Body *body = this->world.GetBody(i);
@@ -91,15 +91,15 @@ class Game : public Engine
 
             if(currentBody == Body::RectangleShape)
             {
-                float width = 10 + rand() % (35 - 10 + 1);
-                float height = 10 + rand() % (35 - 10 + 1);
+                float width = 1 + rand() % (3 - 1 + 1);
+                float height = 1 + rand() % (3 - 1 + 1);
 
                 Body *body = new Rectangle(width, height, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
             else if(currentBody == Body::CircleShape)
             {
-                float radius = 10 + rand() % (35 - 10 + 1);
+                float radius = 1 + rand() % (3 - 1 + 1);
 
                 Body *body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
@@ -107,7 +107,7 @@ class Game : public Engine
             else if(currentBody == Body::RegulatedPolygonShape)
             {
                 float sides = 3 + rand() % (6 - 10 + 1);
-                float radius = 10 + rand() % (35 - 10 + 1);
+                float radius = 1 + rand() % (3 - 1 + 1);
 
                 Body *body = new RegulatedPolygon(sides, radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);

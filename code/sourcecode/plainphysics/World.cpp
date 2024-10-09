@@ -1,22 +1,12 @@
-#include <SFML/Graphics.hpp>
-#include <list>
-
-#include "Vector2D.h"
-#include "Transform.h"
-#include "VectorMath.h"
-#include "AABB.h"
-#include "Body.h"
-#include "Circle.h"
-#include "Rectangle.h"
-#include "Collisions.h"
 #include "World.h"
 
 namespace PlainPhysics
 {
     World::World()
     {
-        this->gravity = Vector2D(0, 98.1f);
+        this->gravity = Vector2D(0, 9.81f);
         this->bodyList = std::list<Body *>();
+        this->contactList = std::list<Manifold>();
     }
 
     int World::BodyCount()
@@ -46,8 +36,13 @@ namespace PlainPhysics
         return NULL;
     }
 
-    void ResolveCollisionBasic(Body* bodyA, Body* bodyB, Vector2D normal, float depth)
+    void ResolveCollisionBasic(Manifold contact)
     {
+        Body *bodyA = contact.bodyA;
+        Body *bodyB = contact.bodyB;
+        Vector2D normal = contact.normal;
+        float depth = contact.depth;
+
         Vector2D relativeVelocity = bodyB->linearVelocity - bodyA->linearVelocity;
 
         if(VectorMath::DotProduct(relativeVelocity, normal) > 0.0f) return;
@@ -107,6 +102,8 @@ namespace PlainPhysics
                 body->Step(delta, totalItterations);
             }
 
+            this->contactList.clear();
+
             for(auto body_it = bodyList.begin(), body_it_ = body_it; body_it != --bodyList.end(); ++body_it)
             {
                 Body* bodyA = *(body_it);    
@@ -121,7 +118,7 @@ namespace PlainPhysics
                     if(!Collisions::IntersectAABB(bodyA_AABB, bodyB_AABB)) continue;
 
                     Vector2D normal; float depth;
-                    if(!Collide(bodyA, bodyB, normal, depth)) continue;;
+                    if(!Collide(bodyA, bodyB, normal, depth)) continue;
 
                     if(VectorMath::NAN_Values(normal)) continue;
 
@@ -138,10 +135,14 @@ namespace PlainPhysics
                         bodyA->Move(-normal * depth / 2.0f);
                         bodyB->Move(normal * depth / 2.0f);
                     }
-        
-                    ResolveCollisionBasic(bodyA, bodyB, normal, depth);
+
+                    Manifold contact(bodyA, bodyB, normal, depth, Vector2D(0, 0), Vector2D(0, 0), 0);
+                    this->contactList.push_back(contact);
                 }
             }
+
+            for(Manifold contact : contactList)
+                ResolveCollisionBasic(contact);
         }        
     }
 }

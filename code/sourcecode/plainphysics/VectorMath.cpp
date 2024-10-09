@@ -1,10 +1,3 @@
-#include <SFML/System/Vector2.hpp>
-// #include <SFML/System/Vector3.hpp>
-#include <cmath>
-
-#include "Vector2D.h"
-// #include "Vector3D.h"
-#include "Transform.h"
 #include "VectorMath.h"
 
 namespace PlainPhysics

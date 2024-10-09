@@ -1,6 +1,3 @@
-#include <cmath>
-
-#include "Vector2D.h"
 #include "Transform.h"
  
 const float DEG_TO_RAD = 3.141592f / 180.0f;

@@ -1,8 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <list>
-
-#include "Vector2D.h"
-#include "AABB.h"
 #include "Body.h"
 
 namespace PlainPhysics
@@ -56,7 +51,7 @@ namespace PlainPhysics
         }
         else 
         {
-            this->mass = 1000000.0f;
+            this->mass = INFINTE_MASS;
         }
 
         this->invMass = 1.0f / this->mass;

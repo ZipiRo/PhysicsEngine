@@ -1,10 +1,3 @@
-#include <cmath>
-#include <list>
-
-#include "Vector2D.h"
-#include "Transform.h"
-#include "VectorMath.h"
-#include "AABB.h"
 #include "Collisions.h"
 
 const float max_float = 1000000.0f;

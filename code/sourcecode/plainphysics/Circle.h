@@ -1,4 +1,14 @@
 #pragma once
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <list>
+
+#include "Vector2D.h"
+#include "Transform.h"
+#include "VectorMath.h"
+#include "AABB.h"
+#include "Body.h"
 
 namespace PlainPhysics
 {

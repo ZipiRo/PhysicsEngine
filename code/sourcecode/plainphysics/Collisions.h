@@ -1,4 +1,11 @@
 #pragma once
+#include <cmath>
+#include <list>
+
+#include "Vector2D.h"
+#include "Transform.h"
+#include "VectorMath.h"
+#include "AABB.h"
 
 namespace PlainPhysics
 {

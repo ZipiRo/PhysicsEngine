@@ -1,13 +1,3 @@
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <list>
-
-#include "Vector2D.h"
-#include "Transform.h"
-#include "VectorMath.h"
-#include "AABB.h"
-#include "Body.h"
 #include "Rectangle.h"
 
 const float max_float = 1000000.0f;
@@ -76,7 +66,7 @@ namespace PlainPhysics
         this->height = height;
         this->surface = this->width * this->height;
         this->density = density;
-        this->mass = isStatic ? 1000000.0f : this->surface * this->density;
+        this->mass = isStatic ? INFINTE_MASS : this->surface * this->density;
         this->invMass = 1.0f / mass;
         this->restitution = restitution;
 

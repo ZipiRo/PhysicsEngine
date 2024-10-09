@@ -1,4 +1,7 @@
 #pragma once
+#include <cmath>
+
+#include "Vector2D.h"
 
 namespace PlainPhysics
 {

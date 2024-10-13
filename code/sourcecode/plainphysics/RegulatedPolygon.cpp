@@ -1,8 +1,5 @@
 #include "RegulatedPolygon.h"
 
-const float max_float = 1000000.0f;
-const float min_float = -1000000.0f;
-
 namespace PlainPhysics 
 {
     std::list<Vector2D> CreateRegulatedPolygonVertices(int sides, float radius)
@@ -69,7 +66,7 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->shapeType = Body::RegulatedPolygonShape;
+        this->shapeType = Body::PolygonShape;
 
         this->vertices = CreateRegulatedPolygonVertices(sides, radius);
         this->transformVertices = this->vertices;

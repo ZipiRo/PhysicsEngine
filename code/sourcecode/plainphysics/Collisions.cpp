@@ -1,14 +1,38 @@
 #include "Collisions.h"
 
-const float max_float = 1000000.0f;
-const float min_float = -1000000.0f;
+const float infinity = 3.4028234e38f;
 
 namespace PlainPhysics 
-{
+{   
+    void PointSegmentDistance(Vector2D point, Vector2D a, Vector2D b, 
+        float& distanceSquared, Vector2D& closestPoint)
+    {
+        Vector2D AB = b - a;
+        Vector2D AP = point - a;
+
+        float projection = VectorMath::DotProduct(AP, AB);
+        float ABLengthSquared = VectorMath::LengthSquared(AB);
+        float t = projection / ABLengthSquared;
+
+        if(t <= 0)
+        {
+            closestPoint = a;
+        }
+        else if(t >= 1.0f)
+        {
+            closestPoint = b;
+        }
+        else
+        {
+            closestPoint = a + AB * t;
+        }
+
+        distanceSquared = VectorMath::DistanceSquared(point, closestPoint);
+    }
     void ProjectVertices(std::list<Vector2D>vertices, Vector2D axis, float& min, float& max)
     {
-        min = max_float;
-		max = min_float;
+        min = infinity;
+		max = -infinity;
 
         for (Vector2D vertex : vertices)
         {
@@ -18,7 +42,6 @@ namespace PlainPhysics
             if(projection > max) max = projection;   
         }
     }
-
     void ProjectCircle(Vector2D center, float radius, Vector2D axis, float& min, float& max)
     {
         Vector2D direction = VectorMath::Normalize(axis);
@@ -40,7 +63,7 @@ namespace PlainPhysics
     int ClosestPointOnPolygon(Vector2D center, std::list<Vector2D> vertices)
     {
         int result = -1, i = 0;
-        float minDistance = max_float;
+        float minDistance = infinity;
 
 
         for(Vector2D vertex : vertices)
@@ -58,6 +81,122 @@ namespace PlainPhysics
         return result;
     }
     
+    void Collisions::FindContactPoint(Vector2D centerA, float radiusA, Vector2D centerB, 
+        Vector2D& contactPoint)
+    {
+        contactPoint = Vector2D(0, 0);
+
+        Vector2D AB = centerB - centerA;
+        Vector2D direction = VectorMath::Normalize(AB);
+
+        contactPoint = centerA + direction * radiusA;
+    }
+
+    void Collisions::FindContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, 
+        Vector2D& contactPoint)
+    {   
+        contactPoint = Vector2D(0, 0);
+        float min_distanceSquared = infinity;
+
+        for(auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex)
+        {
+            auto next_vertex = std::next(vertex);
+            if(next_vertex == vertices.end())
+                next_vertex = vertices.begin(); 
+
+            Vector2D vertexA = *vertex;
+            Vector2D vertexB = *next_vertex;
+
+            float distanceSquared;
+            Vector2D closestPoint;
+            PointSegmentDistance(circleCenter, vertexA, vertexB, distanceSquared, closestPoint);
+
+            if(distanceSquared < min_distanceSquared)
+            {
+                min_distanceSquared = distanceSquared;
+                contactPoint = closestPoint;
+            }
+        }
+    }
+
+    void Collisions::FindPolygonContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, 
+        Vector2D& contactOne, Vector2D& contactTwo, int& contactCount)
+    {
+        contactOne = Vector2D(0, 0);
+        contactTwo = Vector2D(0, 0);
+        contactCount = 0;
+
+        float min_distanceSquared = infinity;
+
+        for(auto vertex_it = verticesA.begin(); vertex_it != verticesA.end(); ++vertex_it)
+        {
+            Vector2D point = *vertex_it;
+
+            for(auto vertex_jt = verticesB.begin(); vertex_jt != verticesB.end(); ++vertex_jt)
+            {
+                auto next_vertex_jt = std::next(vertex_jt);
+                if(next_vertex_jt == verticesB.end())
+                    next_vertex_jt = verticesB.begin(); 
+
+                Vector2D vertexA = *vertex_jt;
+                Vector2D vertexB = *next_vertex_jt;
+
+                float distanceSquared;
+                Vector2D closestPoint;
+                PointSegmentDistance(point, vertexA, vertexB, distanceSquared, closestPoint);
+                
+                if(VectorMath::NearlyEqual(distanceSquared, min_distanceSquared))
+                {
+                    if(!VectorMath::NearlyEqualVectors(closestPoint, contactOne))
+                    {
+                        contactTwo = closestPoint;
+                        contactCount = 2;
+                    }
+                }
+                else if(distanceSquared < min_distanceSquared)
+                {
+                    min_distanceSquared = distanceSquared;
+                    contactOne = closestPoint;
+                    contactCount = 1;
+                }
+            }
+        }
+        
+        for(auto vertex_it = verticesB.begin(); vertex_it != verticesB.end(); ++vertex_it)
+        {
+            Vector2D point = *vertex_it;
+
+            for(auto vertex_jt = verticesA.begin(); vertex_jt != verticesA.end(); ++vertex_jt)
+            {
+                auto next_vertex_jt = std::next(vertex_jt);
+                if(next_vertex_jt == verticesA.end())
+                    next_vertex_jt = verticesA.begin(); 
+
+                Vector2D vertexA = *vertex_jt;
+                Vector2D vertexB = *next_vertex_jt;
+
+                float distanceSquared;
+                Vector2D closestPoint;
+                PointSegmentDistance(point, vertexA, vertexB, distanceSquared, closestPoint);
+                
+                if(VectorMath::NearlyEqual(distanceSquared, min_distanceSquared))
+                {
+                    if(!VectorMath::NearlyEqualVectors(closestPoint, contactOne))
+                    {
+                        contactTwo = closestPoint;
+                        contactCount = 2;
+                    }
+                }
+                else if(distanceSquared < min_distanceSquared)
+                {
+                    min_distanceSquared = distanceSquared;
+                    contactOne = closestPoint;
+                    contactCount = 1;
+                }
+            }
+        }
+    }
+
     bool Collisions::IntersectAABB(AABB a, AABB b) {
 		if (a.max.x <= b.min.x || b.max.x <= a.min.x) return false;
 		if (a.max.y <= b.min.y || b.max.y <= a.min.y) return false;
@@ -66,7 +205,7 @@ namespace PlainPhysics
 	}
 
     bool Collisions::IntersectCircles(Vector2D centerA, float radiusA, Vector2D centerB, float radiusB, 
-            Vector2D &normal, float &depth) 
+        Vector2D &normal, float &depth) 
     {
         normal = Vector2D(0, 0);
         depth = 0.0f;
@@ -89,7 +228,7 @@ namespace PlainPhysics
         Vector2D &normal, float &depth)
     {
         normal = Vector2D(0, 0);
-        depth = max_float;
+        depth = infinity;
         
         Vector2D axis = Vector2D(0, 0);
         float minA, minB, maxA, maxB;
@@ -168,7 +307,7 @@ namespace PlainPhysics
         Vector2D &normal, float &depth)
     {
         normal = Vector2D(0, 0);
-        depth = max_float;
+        depth = infinity;
 
         Vector2D axis = Vector2D(0, 0);
         float minA, minB, maxA, maxB;

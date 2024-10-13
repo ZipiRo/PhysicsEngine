@@ -19,7 +19,9 @@ namespace PlainPhysics{
             void AddBody(Body *body);
             void RemoveBody(Body *body);
             Body* GetBody(int index);
-            void Step(float delta, int totalItterations);
+            void Step(float delta, int totalIterations);
+
+            std::list<Vector2D> contactPointsList;
 
         private:
             std::list<Body *> bodyList;

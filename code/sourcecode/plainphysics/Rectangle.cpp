@@ -1,7 +1,6 @@
 #include "Rectangle.h"
 
-const float max_float = 1000000.0f;
-const float min_float = -1000000.0f;
+const float infinity = 3.4028234e38f;
 
 namespace PlainPhysics 
 {
@@ -24,10 +23,10 @@ namespace PlainPhysics
 
     AABB UpdateRegtangleAABB(std::list<Vector2D> vertices) 
     {
-        float minX = max_float;
-        float minY = max_float;
-        float maxX = min_float;
-        float maxY = min_float;
+        float minX = infinity;
+        float minY = infinity;
+        float maxX = -infinity;
+        float maxY = -infinity;
 
         for(Vector2D vertex : vertices)
         {
@@ -75,7 +74,7 @@ namespace PlainPhysics
 
         this->isStatic = isStatic;
 
-        this->shapeType = RectangleShape;
+        this->shapeType = Body::PolygonShape;
 
         this->vertices = CreateRectangleVertices(this->width, this->height);
         this->transformVertices = this->vertices;

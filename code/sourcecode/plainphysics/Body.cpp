@@ -57,10 +57,10 @@ namespace PlainPhysics
         this->invMass = 1.0f / this->mass;
     }
 
-    void Body::Step(float delta, int totalItterations) {
+    void Body::Step(float delta, int totalIterations) {
         if(this->isStatic) return;
         
-        delta /= float(totalItterations);
+        delta /= float(totalIterations);
 
         Vector2D acceleration = this->force / this->mass;
 

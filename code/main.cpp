@@ -18,7 +18,7 @@ class Game : public Engine
     private:
         World world = World();
         bool lPressed = false;
-        int currentBody = Body::RectangleShape;
+        int currentBody = 1;
 
         void Create() override 
         {
@@ -42,17 +42,17 @@ class Game : public Engine
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
             {
-                currentBody = Body::RectangleShape;
+                currentBody = 1;
                 std::cout << "CREATING RECTANGLES" << '\n';
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
             {
-                currentBody = Body::CircleShape;
+                currentBody = 2;
                 std::cout << "CREATING CIRCLES" << '\n';
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
             {
-                currentBody = Body::RegulatedPolygonShape;
+                currentBody = 3;
                 std::cout << "CREATING REGULATEDPOLYGONS" << '\n';
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -81,6 +81,16 @@ class Game : public Engine
             {
                 this->world.GetBody(i)->Draw(window);
             }
+
+            for(Vector2D point : this->world.contactPointsList)
+            {
+                float radius = 0.2f;
+                sf::CircleShape circlePoint(radius);
+                circlePoint.setOrigin(radius, radius);
+                circlePoint.setFillColor(sf::Color::Black);
+                circlePoint.setPosition(VectorMath::Vector2DtosfmlVector2D(point));
+                window.draw(circlePoint);
+            }
         }
 
         void CreateBody()
@@ -89,7 +99,7 @@ class Game : public Engine
             int g = 0 + rand() % (255 - 0 + 1);
             int b = 0 + rand() % (255 - 0 + 1);
 
-            if(currentBody == Body::RectangleShape)
+            if(currentBody == 1)
             {
                 float width = 1 + rand() % (3 - 1 + 1);
                 float height = 1 + rand() % (3 - 1 + 1);
@@ -97,14 +107,14 @@ class Game : public Engine
                 Body *body = new Rectangle(width, height, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
-            else if(currentBody == Body::CircleShape)
+            else if(currentBody == 2)
             {
                 float radius = 1 + rand() % (3 - 1 + 1);
 
                 Body *body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
-            else if(currentBody == Body::RegulatedPolygonShape)
+            else if(currentBody == 3)
             {
                 float sides = 3 + rand() % (6 - 10 + 1);
                 float radius = 1 + rand() % (3 - 1 + 1);

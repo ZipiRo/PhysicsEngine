@@ -7,6 +7,7 @@ namespace PlainPhysics
         this->gravity = Vector2D(0, 9.81f);
         this->bodyList = std::list<Body *>();
         this->contactList = std::list<Manifold>();
+        this->contactPointsList = std::list<Vector2D>();
     }
 
     int World::BodyCount()
@@ -63,9 +64,9 @@ namespace PlainPhysics
         normal = Vector2D(0, 0);
         depth = 0.0f;
 
-        if(bodyA->shapeType == Body::RectangleShape || bodyA->shapeType == Body::RegulatedPolygonShape)
+        if(bodyA->shapeType == Body::PolygonShape)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygonShape)
+            if(bodyB->shapeType == Body::PolygonShape)
             {
                 return Collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyA->position, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }
@@ -79,7 +80,7 @@ namespace PlainPhysics
         }
         else if(bodyA->shapeType == Body::CircleShape)
         {
-            if(bodyB->shapeType == Body::RectangleShape || bodyB->shapeType == Body::RegulatedPolygonShape)
+            if(bodyB->shapeType == Body::PolygonShape)
             {
                 return Collisions::IntersectCirclesPolygons(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, normal, depth);
             }
@@ -92,24 +93,58 @@ namespace PlainPhysics
         return false;
     }
 
-    void World::Step(float delta, int totalItterations)
+    void FindContactPoints(Body *bodyA, Body* bodyB, Vector2D& contactOne, Vector2D& contactTwo, int& contactCount)
     {
-        for(int currentIterartion = 0; currentIterartion < totalItterations; currentIterartion++)
+        contactOne = Vector2D(0, 0);
+        contactTwo = Vector2D(0, 0);
+        contactCount = 0;
+
+        if(bodyA->shapeType == Body::PolygonShape)
+        {
+            if(bodyB->shapeType == Body::PolygonShape)
+            {
+                Collisions::FindPolygonContactPoints(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices(), contactOne, contactTwo, contactCount);
+            }
+            else if(bodyB->shapeType == Body::CircleShape)
+            {
+                Collisions::FindContactPoint(bodyB->position, bodyB->radius, bodyA->GetTransformedVertices(), bodyA->position, contactOne);
+                contactCount = 1;
+            }  
+        }
+        else if(bodyA->shapeType == Body::CircleShape)
+        {
+            if(bodyB->shapeType == Body::PolygonShape)
+            {
+                Collisions::FindContactPoint(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, contactOne);
+                contactCount = 1;
+            }   
+            else if(bodyB->shapeType == Body::CircleShape)
+            {
+                Collisions::FindContactPoint(bodyA->position, bodyA->radius, bodyB->position, contactOne);
+                contactCount = 1;
+            }  
+        }
+    }
+
+    void World::Step(float delta, int totalIterations)
+    {
+        for(int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
         {
             for(Body* body : bodyList)
             {
                 body->AddForce(body->mass * gravity);
-                body->Step(delta, totalItterations);
+                body->Step(delta, totalIterations);
             }
 
+            this->contactPointsList.clear();
             this->contactList.clear();
 
-            for(auto body_it = bodyList.begin(), body_it_ = body_it; body_it != --bodyList.end(); ++body_it)
+            for(auto body_it = bodyList.begin(); body_it != bodyList.end(); ++body_it)
             {
                 Body* bodyA = *(body_it);    
                 AABB bodyA_AABB = bodyA->GetAABB();
 
-                for(auto body_jt = ++body_it_; body_jt != bodyList.end(); ++body_jt)
+                for(auto body_jt = std::next(body_it); body_jt != bodyList.end(); ++body_jt)
                 {
                     Body* bodyB = *(body_jt);
                     AABB bodyB_AABB = bodyB->GetAABB();
@@ -136,13 +171,29 @@ namespace PlainPhysics
                         bodyB->Move(normal * depth / 2.0f);
                     }
 
-                    Manifold contact(bodyA, bodyB, normal, depth, Vector2D(0, 0), Vector2D(0, 0), 0);
+                    Vector2D contactOne, contactTwo;
+                    int contactCount;
+
+                    FindContactPoints(bodyA, bodyB, contactOne, contactTwo, contactCount);
+                    Manifold contact(bodyA, bodyB, normal, depth, contactOne, contactTwo, contactCount);
                     this->contactList.push_back(contact);
                 }
             }
 
             for(Manifold contact : contactList)
+            {
                 ResolveCollisionBasic(contact);
+
+                if(contact.contactCount >= 1)
+                {   
+                    this->contactPointsList.push_back(contact.contactOne);
+
+                    if(contact.contactCount >= 2)
+                    {
+                        this->contactPointsList.push_back(contact.contactTwo);
+                    }
+                }
+            }
         }        
     }
 }

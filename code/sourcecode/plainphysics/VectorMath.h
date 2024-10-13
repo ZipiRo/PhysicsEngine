@@ -9,18 +9,22 @@ namespace PlainPhysics
 {   
     namespace VectorMath
     {
-        Vector2D sfmlVector2DtoVector2D(sf::Vector2f v);
-        sf::Vector2f Vector2DtosfmlVector2D(Vector2D v);
+        Vector2D sfmlVector2DtoVector2D(sf::Vector2f vector);
+        sf::Vector2f Vector2DtosfmlVector2D(Vector2D vector);
 
-        float Length(Vector2D v);
+        float Length(Vector2D vector);
+        float LengthSquared(Vector2D vector);
         float Distance(Vector2D a, Vector2D b);
-        Vector2D Normalize(Vector2D v);
+        float DistanceSquared(Vector2D a, Vector2D b);
+        Vector2D Normalize(Vector2D vector);
         float DotProduct(Vector2D a, Vector2D b);
         float CrossProduct(Vector2D a, Vector2D b);
+        bool NearlyEqual(float a, float b); /// Get this out !!! make another class
+        bool NearlyEqualVectors(Vector2D a, Vector2D b);
 
-        bool NAN_Values(Vector2D v);
+        bool NAN_Values(Vector2D vector);
 
-        Vector2D VectorTransformZ(Vector2D v, Transform transform);
+        Vector2D VectorTransformZ(Vector2D vector, Transform transform);
     }
 
 }

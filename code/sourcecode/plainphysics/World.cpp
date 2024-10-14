@@ -7,7 +7,6 @@ namespace PlainPhysics
         this->gravity = Vector2D(0, 9.81f);
         this->bodyList = std::list<Body *>();
         this->contactList = std::list<Manifold>();
-        this->contactPointsList = std::list<Vector2D>();
     }
 
     int World::BodyCount()
@@ -35,28 +34,6 @@ namespace PlainPhysics
         }
 
         return NULL;
-    }
-
-    void ResolveCollisionBasic(Manifold contact)
-    {
-        Body *bodyA = contact.bodyA;
-        Body *bodyB = contact.bodyB;
-        Vector2D normal = contact.normal;
-        float depth = contact.depth;
-
-        Vector2D relativeVelocity = bodyB->linearVelocity - bodyA->linearVelocity;
-
-        if(VectorMath::DotProduct(relativeVelocity, normal) > 0.0f) return;
-
-        float e = std::min(bodyA->restitution, bodyB->restitution);
-
-        float j = -(1 + e) * VectorMath::DotProduct(relativeVelocity, normal);
-        j = j / (bodyA->invMass + bodyB->invMass); 
-
-        Vector2D impulse = j * normal;
-
-        bodyA->linearVelocity += -impulse * bodyA->invMass;
-        bodyB->linearVelocity += impulse * bodyB->invMass;
     }
 
     bool Collide(Body* bodyA, Body* bodyB, Vector2D& normal, float& depth)
@@ -93,6 +70,23 @@ namespace PlainPhysics
         return false;
     }
 
+    void SeparateBodies(Body *bodyA, Body *bodyB, Vector2D MTV)
+    {
+        if(bodyA->isStatic)
+        {
+            bodyB->Move(MTV);
+        }
+        else if(bodyB->isStatic)
+        {
+            bodyA->Move(-MTV);
+        }
+        else 
+        {
+            bodyA->Move(-MTV / 2.0f);
+            bodyB->Move(MTV / 2.0f);
+        }
+    }
+
     void FindContactPoints(Body *bodyA, Body* bodyB, Vector2D& contactOne, Vector2D& contactTwo, int& contactCount)
     {
         contactOne = Vector2D(0, 0);
@@ -103,11 +97,11 @@ namespace PlainPhysics
         {
             if(bodyB->shapeType == Body::PolygonShape)
             {
-                Collisions::FindPolygonContactPoints(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices(), contactOne, contactTwo, contactCount);
+                Collisions::FindPolygonsContactPoints(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices(), contactOne, contactTwo, contactCount);
             }
             else if(bodyB->shapeType == Body::CircleShape)
             {
-                Collisions::FindContactPoint(bodyB->position, bodyB->radius, bodyA->GetTransformedVertices(), bodyA->position, contactOne);
+                Collisions::FindCirclePolygonContactPoint(bodyB->position, bodyB->radius, bodyA->GetTransformedVertices(), bodyA->position, contactOne);
                 contactCount = 1;
             }  
         }
@@ -115,14 +109,88 @@ namespace PlainPhysics
         {
             if(bodyB->shapeType == Body::PolygonShape)
             {
-                Collisions::FindContactPoint(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, contactOne);
+                Collisions::FindCirclePolygonContactPoint(bodyA->position, bodyA->radius, bodyB->GetTransformedVertices(), bodyB->position, contactOne);
                 contactCount = 1;
             }   
             else if(bodyB->shapeType == Body::CircleShape)
             {
-                Collisions::FindContactPoint(bodyA->position, bodyA->radius, bodyB->position, contactOne);
+                Collisions::FindCircleContactPoint(bodyA->position, bodyA->radius, bodyB->position, contactOne);
                 contactCount = 1;
             }  
+        }
+    }
+    
+    void ResolveCollisionBasic(Manifold contact)
+    {
+        Body *bodyA = contact.bodyA;
+        Body *bodyB = contact.bodyB;
+        Vector2D normal = contact.normal;
+        float depth = contact.depth;
+
+        Vector2D relativeVelocity = bodyB->linearVelocity - bodyA->linearVelocity;
+
+        if(VectorMath::DotProduct(relativeVelocity, normal) > 0.0f) return;
+
+        float e = std::min(bodyA->restitution, bodyB->restitution);
+
+        float j = -(1 + e) * VectorMath::DotProduct(relativeVelocity, normal);
+        j = j / (bodyA->invMass + bodyB->invMass); 
+
+        Vector2D impulse = j * normal;
+
+        bodyA->linearVelocity += -impulse * bodyA->invMass;
+        bodyB->linearVelocity += impulse * bodyB->invMass;
+    }
+    
+    void World::StepBodies(float delta, int totalIterations)
+    {
+        for(Body* body : bodyList)
+        {
+            body->AddForce(body->mass * gravity);
+            body->Step(delta, totalIterations);
+        }
+    }
+
+    void World::BroadPhase()
+    {
+        int i = 1;
+        for(auto body_it = bodyList.begin(); body_it != bodyList.end(); ++body_it, i++)
+        {
+            Body* bodyA = *(body_it);    
+            AABB bodyA_AABB = bodyA->GetAABB();
+            
+            int j = i + 1;
+            for(auto body_jt = std::next(body_it); body_jt != bodyList.end(); ++body_jt, j++)
+            {
+                Body* bodyB = *(body_jt);
+                AABB bodyB_AABB = bodyB->GetAABB();
+
+                if(bodyA->isStatic && bodyB->isStatic) continue;
+                if(!Collisions::IntersectAABB(bodyA_AABB, bodyB_AABB)) continue;
+                
+                contactPairs.push_back(ContactPair({i, j}));
+            }
+        }
+    }
+
+    void World::NarrowPhase()
+    {
+        for(ContactPair pair : contactPairs)
+        {
+            Body *bodyA = this->GetBody(pair.first);
+            Body *bodyB = this->GetBody(pair.second);
+
+            Vector2D normal; float depth;
+            if(!Collide(bodyA, bodyB, normal, depth)) continue;
+            if(VectorMath::NAN_Values(normal)) continue;
+
+            SeparateBodies(bodyA, bodyB, normal * depth);
+
+            Vector2D contactOne, contactTwo; int contactCount;
+            FindContactPoints(bodyA, bodyB, contactOne, contactTwo, contactCount);
+            Manifold contact(bodyA, bodyB, normal, depth, contactOne, contactTwo, contactCount);
+
+            ResolveCollisionBasic(contact);
         }
     }
 
@@ -130,70 +198,10 @@ namespace PlainPhysics
     {
         for(int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
         {
-            for(Body* body : bodyList)
-            {
-                body->AddForce(body->mass * gravity);
-                body->Step(delta, totalIterations);
-            }
-
-            this->contactPointsList.clear();
-            this->contactList.clear();
-
-            for(auto body_it = bodyList.begin(); body_it != bodyList.end(); ++body_it)
-            {
-                Body* bodyA = *(body_it);    
-                AABB bodyA_AABB = bodyA->GetAABB();
-
-                for(auto body_jt = std::next(body_it); body_jt != bodyList.end(); ++body_jt)
-                {
-                    Body* bodyB = *(body_jt);
-                    AABB bodyB_AABB = bodyB->GetAABB();
-
-                    if(bodyA->isStatic && bodyB->isStatic) continue;
-                    if(!Collisions::IntersectAABB(bodyA_AABB, bodyB_AABB)) continue;
-
-                    Vector2D normal; float depth;
-                    if(!Collide(bodyA, bodyB, normal, depth)) continue;
-
-                    if(VectorMath::NAN_Values(normal)) continue;
-
-                    if(bodyA->isStatic)
-                    {
-                        bodyB->Move(normal * depth);
-                    }
-                    else if(bodyB->isStatic)
-                    {
-                        bodyA->Move(-normal * depth);
-                    }
-                    else 
-                    {
-                        bodyA->Move(-normal * depth / 2.0f);
-                        bodyB->Move(normal * depth / 2.0f);
-                    }
-
-                    Vector2D contactOne, contactTwo;
-                    int contactCount;
-
-                    FindContactPoints(bodyA, bodyB, contactOne, contactTwo, contactCount);
-                    Manifold contact(bodyA, bodyB, normal, depth, contactOne, contactTwo, contactCount);
-                    this->contactList.push_back(contact);
-                }
-            }
-
-            for(Manifold contact : contactList)
-            {
-                ResolveCollisionBasic(contact);
-
-                if(contact.contactCount >= 1)
-                {   
-                    this->contactPointsList.push_back(contact.contactOne);
-
-                    if(contact.contactCount >= 2)
-                    {
-                        this->contactPointsList.push_back(contact.contactTwo);
-                    }
-                }
-            }
+            this->contactPairs.clear();
+            this->StepBodies(delta, totalIterations);
+            this->BroadPhase();
+            this->NarrowPhase();
         }        
     }
 }

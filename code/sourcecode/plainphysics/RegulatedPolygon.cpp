@@ -1,5 +1,7 @@
 #include "RegulatedPolygon.h"
 
+const float PI = 3.141592f;
+
 namespace PlainPhysics 
 {
     std::list<Vector2D> CreateRegulatedPolygonVertices(int sides, float radius)
@@ -8,7 +10,7 @@ namespace PlainPhysics
 
         for(int i = 0; i < sides; i++)
         {
-            float e = 2 * i * 3.141592f;
+            float e = 2 * i * PI;
             float vertexX = cosf((e + 1) / float(sides)) * radius; 
             float vertexY = sinf((e + 1) / float(sides)) * radius;
 
@@ -54,12 +56,15 @@ namespace PlainPhysics
         this->force = Vector2D(0, 0);
 
         this->radius = radius;
-        this->surface = sides * (radius * radius) * sinf(2 * 3.141592f / sides) / 2;
+        this->surface = sides * (radius * radius) * sinf(2 * PI / sides) / 2;
 
         this->density = density;
-        this->mass = isStatic ? INFINTE_MASS : this->surface * this->density;
-        this->invMass = 1.0f / mass;
+        this->mass = isStatic ? 0.0f : this->surface * this->density;
+        this->inertia = isStatic ? 0.0f : (1.0f / 2.0f) * this->mass * (this->radius * this->radius) * (1.0f - (2.0f / 3.0f) * sin(PI / sides) * sin(PI / sides));
         this->restitution = restitution;
+
+        this->invMass = isStatic ? 0.0f : 1.0f / mass;
+        this->invInertia = isStatic ? 0.0f : 1.0f / inertia;
 
         this->fillColor = fillColor;
         this->outlineColor = outlineColor;

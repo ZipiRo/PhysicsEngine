@@ -20,8 +20,8 @@ namespace PlainPhysics
         bool IntersectCirclesPolygons(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter,
             Vector2D &normal, float &depth);
         
-        void FindContactPoint(Vector2D centerA, float radiusA, Vector2D centerB, Vector2D& contactPoint);
-        void FindContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, Vector2D& contactPoint);
-        void FindPolygonContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, Vector2D& contactOne, Vector2D& contactTwo, int& contactCount);
+        void FindCircleContactPoint(Vector2D centerA, float radiusA, Vector2D centerB, Vector2D& contactPoint);
+        void FindCirclePolygonContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, Vector2D& contactPoint);
+        void FindPolygonsContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, Vector2D& contactOne, Vector2D& contactTwo, int& contactCount);
     }
 }

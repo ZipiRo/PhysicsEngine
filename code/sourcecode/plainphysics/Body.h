@@ -9,8 +9,6 @@
 
 namespace PlainPhysics
 {
-    const float INFINTE_MASS = 3.4028234e38f;
-
     class Body
     {
         public:
@@ -24,7 +22,6 @@ namespace PlainPhysics
 
             void SetFillColor(sf::Color color);
             void SetOutlineColor(sf::Color color);
-            void SetStatic(bool isStatic);
             void Step(float delta, int totalIterations);
             
             Vector2D position;
@@ -33,6 +30,13 @@ namespace PlainPhysics
             float angularVelocity;
 
             Vector2D force;
+
+            float width;
+            float height;
+            float radius;
+
+            float inertia;
+            float invInertia;
 
             float surface;
             float density;
@@ -43,9 +47,6 @@ namespace PlainPhysics
 
             bool isStatic;
 
-            float radius;
-            float width;
-            float height;
 
             bool UPDATE_VERTICES;
             bool UPDATE_AABB;

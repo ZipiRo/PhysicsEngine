@@ -1,6 +1,5 @@
 #include "Rectangle.h"
 
-const float infinity = 3.4028234e38f;
 
 namespace PlainPhysics 
 {
@@ -21,8 +20,10 @@ namespace PlainPhysics
         return vertices;
     }
 
-    AABB UpdateRegtangleAABB(std::list<Vector2D> vertices) 
+    AABB UpdateRectangleAABB(std::list<Vector2D> vertices) 
     {
+        const float infinity = 3.4028234e38f;
+        
         float minX = infinity;
         float minY = infinity;
         float maxX = -infinity;
@@ -65,9 +66,12 @@ namespace PlainPhysics
         this->height = height;
         this->surface = this->width * this->height;
         this->density = density;
-        this->mass = isStatic ? INFINTE_MASS : this->surface * this->density;
-        this->invMass = 1.0f / mass;
+        this->mass = isStatic ? 0.0f : this->surface * this->density;
+        this->inertia = isStatic ? 0.0f : (1.0f / 12.0f) * this->mass * (this->height * this->height + this->width * this->width);
         this->restitution = restitution;
+
+        this->invMass = isStatic ? 0.0f : 1.0f / mass;
+        this->invInertia = isStatic ? 0.0f : 1.0f / inertia;
 
         this->fillColor = fillColor;
         this->outlineColor = outlineColor;
@@ -79,7 +83,7 @@ namespace PlainPhysics
         this->vertices = CreateRectangleVertices(this->width, this->height);
         this->transformVertices = this->vertices;
 
-        this->aabb = UpdateRegtangleAABB(this->vertices);
+        this->aabb = UpdateRectangleAABB(this->vertices);
 
         this->rectangleShape = sf::RectangleShape(sf::Vector2f(width, height));
         this->rectangleShape.setOrigin(sf::Vector2f(this->width / 2, this->height / 2));
@@ -98,7 +102,7 @@ namespace PlainPhysics
             this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);
 
         if(this->UPDATE_AABB)
-            this->aabb = UpdateRegtangleAABB(this->GetTransformedVertices());
+            this->aabb = UpdateRectangleAABB(this->GetTransformedVertices());
 
         this->rectangleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->rectangleShape.setRotation(this->angle);
@@ -120,7 +124,7 @@ namespace PlainPhysics
     AABB Rectangle::GetAABB()
     {
         if(this->UPDATE_AABB)
-            this->aabb = UpdateRegtangleAABB(this->GetTransformedVertices());
+            this->aabb = UpdateRectangleAABB(this->GetTransformedVertices());
 
         this->UPDATE_AABB = false;
         return this->aabb;

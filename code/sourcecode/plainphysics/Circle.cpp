@@ -1,5 +1,7 @@
 #include "Circle.h"
 
+const float PI = 3.141592f;
+
 namespace PlainPhysics 
 {
     AABB UpdateCircleAABB(Vector2D position, float radius) 
@@ -23,11 +25,14 @@ namespace PlainPhysics
         this->force = Vector2D(0, 0);
 
         this->radius = radius;
-        this->surface = this->radius * this->radius * 3.1415926f;
+        this->surface = this->radius * this->radius * PI;
         this->density = density;
-        this->mass = isStatic ? INFINTE_MASS : this->surface * this->density;
-        this->invMass = 1.0f / this->mass;
+        this->mass = isStatic ? 0.0f : this->surface * this->density;
+        this->inertia = isStatic ? 0.0f : (1.0f / 2.0f) * this->mass * (this->radius * this->radius);
         this->restitution = restitution;
+
+        this->invMass = isStatic ? 0.0f : 1.0f / mass;
+        this->invInertia = isStatic ? 0.0f : 1.0f / inertia;
 
         this->fillColor = fillColor;
         this->outlineColor = outlineColor;

@@ -9,7 +9,10 @@
 #include "Rectangle.h"
 #include "Collisions.h"
 
-namespace PlainPhysics{
+namespace PlainPhysics
+{
+    struct ContactPair { int first, second; };
+
     class World
     {
         public:
@@ -20,11 +23,13 @@ namespace PlainPhysics{
             void RemoveBody(Body *body);
             Body* GetBody(int index);
             void Step(float delta, int totalIterations);
-
-            std::list<Vector2D> contactPointsList;
+            void StepBodies(float delta, int totalIterations);
+            void BroadPhase();
+            void NarrowPhase();
 
         private:
             std::list<Body *> bodyList;
+            std::list<ContactPair> contactPairs;
             std::list<Manifold> contactList;
             Vector2D gravity;
     };

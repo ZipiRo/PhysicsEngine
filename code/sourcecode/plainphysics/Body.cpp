@@ -42,21 +42,6 @@ namespace PlainPhysics
         this->shape->setOutlineColor(this->outlineColor);
     }
 
-    void Body::SetStatic(bool isStatic) {
-        this->isStatic = isStatic;
-
-        if(!isStatic) 
-        {
-            this->mass = this->surface * this->density;
-        }
-        else 
-        {
-            this->mass = INFINTE_MASS;
-        }
-
-        this->invMass = 1.0f / this->mass;
-    }
-
     void Body::Step(float delta, int totalIterations) {
         if(this->isStatic) return;
         
@@ -67,7 +52,7 @@ namespace PlainPhysics
         this->linearVelocity += acceleration * delta;
         this->position += this->linearVelocity * delta;
 
-        this->angle += this->angularVelocity * delta;
+        this->angle += this->angularVelocity * 45.0f * delta;
         
         this->force = Vector2D(0, 0);
 

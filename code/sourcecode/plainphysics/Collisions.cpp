@@ -81,7 +81,7 @@ namespace PlainPhysics
         return result;
     }
     
-    void Collisions::FindContactPoint(Vector2D centerA, float radiusA, Vector2D centerB, 
+    void Collisions::FindCircleContactPoint(Vector2D centerA, float radiusA, Vector2D centerB, 
         Vector2D& contactPoint)
     {
         contactPoint = Vector2D(0, 0);
@@ -92,7 +92,7 @@ namespace PlainPhysics
         contactPoint = centerA + direction * radiusA;
     }
 
-    void Collisions::FindContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, 
+    void Collisions::FindCirclePolygonContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, 
         Vector2D& contactPoint)
     {   
         contactPoint = Vector2D(0, 0);
@@ -119,7 +119,7 @@ namespace PlainPhysics
         }
     }
 
-    void Collisions::FindPolygonContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, 
+    void Collisions::FindPolygonsContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, 
         Vector2D& contactOne, Vector2D& contactTwo, int& contactCount)
     {
         contactOne = Vector2D(0, 0);

@@ -12,18 +12,26 @@ class Game : public Engine
             w_Name = "PhysicsEngine v1.0";
             w_BackgroundColor = sf::Color(30.0f, 129.0f, 176.0f);
             viewZoomFactor = 0.1f;
-            maxFps = 9999.0f;
+            maxFps = 60.0f;
         }
     
     private:
-        World world = World();
+        World world;
         bool lPressed = false;
         int currentBody = 1;
 
         void Create() override 
         {
-            Body *Ground = new Rectangle(78.0f, 10.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 20.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Body *Ground = new Rectangle(75.0f, 6.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 15.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
             world.AddBody(Ground);
+            
+            Body *Platform_One = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f + 15.0f, this->GetWindowHeigth() / 2 - 15.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Platform_One->RotateTo(-25.0f);
+            world.AddBody(Platform_One);
+            
+            Body *Platform_Two = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f - 15.0f, this->GetWindowHeigth() / 2 - 5.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Platform_Two->RotateTo(25.0f);
+            world.AddBody(Platform_Two);
         }
 
         void Update(float delta) override 
@@ -81,16 +89,6 @@ class Game : public Engine
             {
                 this->world.GetBody(i)->Draw(window);
             }
-
-            for(Vector2D point : this->world.contactPointsList)
-            {
-                float radius = 0.2f;
-                sf::CircleShape circlePoint(radius);
-                circlePoint.setOrigin(radius, radius);
-                circlePoint.setFillColor(sf::Color::Black);
-                circlePoint.setPosition(VectorMath::Vector2DtosfmlVector2D(point));
-                window.draw(circlePoint);
-            }
         }
 
         void CreateBody()
@@ -128,6 +126,6 @@ class Game : public Engine
 int main()
 {
     Game game;
-    game.Construct(1240, 720);
+    game.Construct(800, 600);
     game.Start();
 }

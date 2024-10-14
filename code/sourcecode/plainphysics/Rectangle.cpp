@@ -3,9 +3,9 @@
 
 namespace PlainPhysics 
 {
-    std::list<Vector2D> CreateRectangleVertices(float width, float height)
+    std::vector<Vector2D> CreateRectangleVertices(float width, float height)
     {
-        std::list<Vector2D> vertices;
+        std::vector<Vector2D> vertices;
 
         float left = -width / 2.0f;
         float right = left + width;
@@ -20,10 +20,10 @@ namespace PlainPhysics
         return vertices;
     }
 
-    AABB UpdateRectangleAABB(std::list<Vector2D> vertices) 
+    AABB UpdateRectangleAABB(std::vector<Vector2D> vertices) 
     {
         const float infinity = 3.4028234e38f;
-        
+
         float minX = infinity;
         float minY = infinity;
         float maxX = -infinity;
@@ -41,9 +41,9 @@ namespace PlainPhysics
         return AABB(minX, minY, maxX, maxY);
     }
     
-    std::list<Vector2D> UpdateRectangleVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
+    std::vector<Vector2D> UpdateRectangleVertices(std::vector<Vector2D> vertices, Vector2D position, float angle)
     {
-        std::list<Vector2D> transformVertices;
+        std::vector<Vector2D> transformVertices;
 
         Transform transform(position, angle);
 
@@ -112,7 +112,7 @@ namespace PlainPhysics
         this->UPDATE_VERTICES = false;
     }
 
-    std::list<Vector2D> Rectangle::GetTransformedVertices()
+    std::vector<Vector2D> Rectangle::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
             this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);

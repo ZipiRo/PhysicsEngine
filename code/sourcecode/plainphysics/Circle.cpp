@@ -63,9 +63,9 @@ namespace PlainPhysics
         window.draw(this->circleShape);
     }
 
-    std::list<Vector2D> Circle::GetTransformedVertices()
+    std::vector<Vector2D> Circle::GetTransformedVertices()
     {
-        return std::list<Vector2D>();
+        return std::vector<Vector2D>();
     }
 
     AABB Circle::GetAABB()

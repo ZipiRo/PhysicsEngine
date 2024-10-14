@@ -5,8 +5,6 @@ namespace PlainPhysics
     World::World()
     {
         this->gravity = Vector2D(0, 9.81f);
-        this->bodyList = std::list<Body *>();
-        this->contactList = std::list<Manifold>();
     }
 
     int World::BodyCount()

@@ -30,7 +30,6 @@ namespace PlainPhysics
         private:
             std::list<Body *> bodyList;
             std::list<ContactPair> contactPairs;
-            std::list<Manifold> contactList;
             Vector2D gravity;
     };
 }

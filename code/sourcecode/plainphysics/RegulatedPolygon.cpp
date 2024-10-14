@@ -4,9 +4,9 @@ const float PI = 3.141592f;
 
 namespace PlainPhysics 
 {
-    std::list<Vector2D> CreateRegulatedPolygonVertices(int sides, float radius)
+    std::vector<Vector2D> CreateRegulatedPolygonVertices(int sides, float radius)
     {
-        std::list<Vector2D> vertices;
+        std::vector<Vector2D> vertices;
 
         for(int i = 0; i < sides; i++)
         {
@@ -34,9 +34,9 @@ namespace PlainPhysics
         return AABB(minX, minY, maxX, maxY);
     }
     
-    std::list<Vector2D> UpdateRegulatedPolygonVertices(std::list<Vector2D> vertices, Vector2D position, float angle)
+    std::vector<Vector2D> UpdateRegulatedPolygonVertices(std::vector<Vector2D> vertices, Vector2D position, float angle)
     {
-        std::list<Vector2D> transformVertices;
+        std::vector<Vector2D> transformVertices;
 
         Transform transform(position, angle);
 
@@ -109,7 +109,7 @@ namespace PlainPhysics
         this->UPDATE_VERTICES = false;
     }
 
-    std::list<Vector2D> RegulatedPolygon::GetTransformedVertices()
+    std::vector<Vector2D> RegulatedPolygon::GetTransformedVertices()
     {
         if(this->UPDATE_VERTICES)
             this->transformVertices = UpdateRegulatedPolygonVertices(this->vertices, this->position, this->angle);

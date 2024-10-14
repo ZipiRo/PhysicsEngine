@@ -29,7 +29,7 @@ namespace PlainPhysics
 
         distanceSquared = VectorMath::DistanceSquared(point, closestPoint);
     }
-    void ProjectVertices(std::list<Vector2D>vertices, Vector2D axis, float& min, float& max)
+    void ProjectVertices(std::vector<Vector2D>vertices, Vector2D axis, float& min, float& max)
     {
         min = infinity;
 		max = -infinity;
@@ -60,7 +60,7 @@ namespace PlainPhysics
             max = aux;
         }
     }
-    int ClosestPointOnPolygon(Vector2D center, std::list<Vector2D> vertices)
+    int ClosestPointOnPolygon(Vector2D center, std::vector<Vector2D> vertices)
     {
         int result = -1, i = 0;
         float minDistance = infinity;
@@ -92,7 +92,7 @@ namespace PlainPhysics
         contactPoint = centerA + direction * radiusA;
     }
 
-    void Collisions::FindCirclePolygonContactPoint(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter, 
+    void Collisions::FindCirclePolygonContactPoint(Vector2D circleCenter, float radius, std::vector<Vector2D>vertices, Vector2D polygonCenter, 
         Vector2D& contactPoint)
     {   
         contactPoint = Vector2D(0, 0);
@@ -119,7 +119,7 @@ namespace PlainPhysics
         }
     }
 
-    void Collisions::FindPolygonsContactPoints(std::list<Vector2D>verticesA, std::list<Vector2D>verticesB, 
+    void Collisions::FindPolygonsContactPoints(std::vector<Vector2D>verticesA, std::vector<Vector2D>verticesB, 
         Vector2D& contactOne, Vector2D& contactTwo, int& contactCount)
     {
         contactOne = Vector2D(0, 0);
@@ -224,7 +224,7 @@ namespace PlainPhysics
         return true;
     }
 
-    bool Collisions::IntersectPolygons(std::list<Vector2D>verticesA, Vector2D centerA, std::list<Vector2D>verticesB, Vector2D centerB, 
+    bool Collisions::IntersectPolygons(std::vector<Vector2D>verticesA, Vector2D centerA, std::vector<Vector2D>verticesB, Vector2D centerB, 
         Vector2D &normal, float &depth)
     {
         normal = Vector2D(0, 0);
@@ -303,7 +303,7 @@ namespace PlainPhysics
         return true;
     }
 
-    bool Collisions::IntersectCirclesPolygons(Vector2D circleCenter, float radius, std::list<Vector2D>vertices, Vector2D polygonCenter,
+    bool Collisions::IntersectCirclesPolygons(Vector2D circleCenter, float radius, std::vector<Vector2D>vertices, Vector2D polygonCenter,
         Vector2D &normal, float &depth)
     {
         normal = Vector2D(0, 0);

@@ -12,7 +12,7 @@ class Game : public Engine
             w_Name = "PhysicsEngine v1.0";
             w_BackgroundColor = sf::Color(30.0f, 129.0f, 176.0f);
             viewZoomFactor = 0.1f;
-            maxFps = 60.0f;
+            maxFps = 9999.0f;
         }
     
     private:

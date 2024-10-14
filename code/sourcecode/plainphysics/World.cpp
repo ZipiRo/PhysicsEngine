@@ -68,20 +68,20 @@ namespace PlainPhysics
         return false;
     }
 
-    void SeparateBodies(Body *bodyA, Body *bodyB, Vector2D MTV)
+    void SeparateBodies(Body *bodyA, Body *bodyB, Vector2D MinTranslationVector)
     {
         if(bodyA->isStatic)
         {
-            bodyB->Move(MTV);
+            bodyB->Move(MinTranslationVector);
         }
         else if(bodyB->isStatic)
         {
-            bodyA->Move(-MTV);
+            bodyA->Move(-MinTranslationVector);
         }
         else 
         {
-            bodyA->Move(-MTV / 2.0f);
-            bodyB->Move(MTV / 2.0f);
+            bodyA->Move(-MinTranslationVector / 2.0f);
+            bodyB->Move(MinTranslationVector / 2.0f);
         }
     }
 
@@ -144,7 +144,9 @@ namespace PlainPhysics
     {
         for(Body* body : bodyList)
         {
-            body->AddForce(body->mass * gravity);
+            if(!body->isStatic)
+                body->AddForce(body->mass * gravity);
+
             body->Step(delta, totalIterations);
         }
     }

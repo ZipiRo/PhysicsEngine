@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "Vector2D.h"
 #include "Transform.h"
 #include "VectorMath.h"
@@ -29,7 +31,7 @@ namespace PlainPhysics
 
         private:
             std::list<Body *> bodyList;
-            std::list<ContactPair> contactPairs;
+            std::vector<ContactPair> contactPairs;
             Vector2D gravity;
     };
 }

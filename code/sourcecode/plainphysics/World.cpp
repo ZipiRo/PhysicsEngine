@@ -139,6 +139,201 @@ namespace PlainPhysics
         bodyA->linearVelocity += -impulse * bodyA->invMass;
         bodyB->linearVelocity += impulse * bodyB->invMass;
     }
+
+    void ResolveCollisionRotation(Manifold contact) {
+        Body* bodyA = contact.bodyA;
+        Body* bodyB = contact.bodyB;
+        Vector2D normal = contact.normal;
+        Vector2D contactOne = contact.contactOne;
+        Vector2D contactTwo = contact.contactTwo;
+        int contactCount = contact.contactCount;
+
+        Vector2D contactList[2] = { contactOne, contactTwo };
+        Vector2D impulseList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+        Vector2D raList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+        Vector2D rbList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+
+        float e = std::min(bodyA->restitution, bodyB->restitution);
+
+        for (int i = 0; i < contactCount; i++)
+        {
+            Vector2D ra = contactList[i] - bodyA->position;
+            Vector2D rb = contactList[i] - bodyB->position;
+
+            raList[i] = ra;
+            rbList[i] = rb;
+
+            Vector2D raPerp = Vector2D(-ra.y, ra.x);
+            Vector2D rbPerp = Vector2D(-rb.y, rb.x);
+
+            Vector2D angularLinearVelocityA = raPerp * bodyA->angularVelocity;
+            Vector2D angularLinearVelocityB = rbPerp * bodyB->angularVelocity;
+
+            Vector2D relativeVelocity =
+                (bodyB->linearVelocity + angularLinearVelocityB) -
+                (bodyA->linearVelocity + angularLinearVelocityA);
+
+            float contactVelocityMag =VectorMath::DotProduct(relativeVelocity, normal);
+
+            if (contactVelocityMag > 0.0f)
+                continue;
+
+            float raPerpDotN = VectorMath::DotProduct(raPerp, normal);
+            float rbPerpDotN = VectorMath::DotProduct(rbPerp, normal);
+
+            float denom = bodyA->invMass + bodyB->invMass +
+                (raPerpDotN * raPerpDotN) * bodyA->invInertia +
+                (rbPerpDotN * rbPerpDotN) * bodyB->invInertia;
+
+            float j = -(1.0f + e) * contactVelocityMag;
+            j /= denom;
+            j /= (float)contactCount;
+
+            Vector2D impulse = j * normal;
+            impulseList[i] = impulse;
+        }
+
+        for (int i = 0; i < contactCount; i++)
+        {
+            Vector2D impulse = impulseList[i];
+            Vector2D ra = raList[i];
+            Vector2D rb = rbList[i];
+
+            bodyA->linearVelocity += -impulse * bodyA->invMass;
+            bodyA->angularVelocity += -VectorMath::CrossProduct(ra, impulse) * bodyA->invInertia;
+            bodyB->linearVelocity += impulse * bodyB->invMass;
+            bodyB->angularVelocity += VectorMath::CrossProduct(rb, impulse) * bodyB->invInertia;
+        }
+    }
+
+    void ResolveCollisionRotationFriction(Manifold contact) {
+        Body* bodyA = contact.bodyA;
+        Body* bodyB = contact.bodyB;
+        Vector2D normal = contact.normal;
+        Vector2D contactOne = contact.contactOne;
+        Vector2D contactTwo = contact.contactTwo;
+        float depth = contact.depth;
+        int contactCount = contact.contactCount;
+
+        float e = std::min(bodyA->restitution, bodyB->restitution);
+
+        float sf = (bodyA->staticFriction + bodyB->staticFriction) * 0.5f;
+        float df = (bodyA->dinamicFriction + bodyB->dinamicFriction) * 0.5f;
+
+        float jList[2] = {0, 0};
+        Vector2D contactList[2] = {contactOne, contactTwo};
+        Vector2D impulseList[2] = {Vector2D(0, 0), Vector2D(0, 0)};
+        Vector2D frictionImpulseList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+        Vector2D raList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+        Vector2D rbList[2] = { Vector2D(0, 0), Vector2D(0, 0) };
+
+        for (int i = 0; i < contactCount; i++) {
+            Vector2D ra = contactList[i] - bodyA->position;
+            Vector2D rb = contactList[i] - bodyB->position;
+
+            raList[i] = ra; rbList[i] = rb;
+
+            Vector2D raPerp = Vector2D(-ra.y, ra.x);
+            Vector2D rbPerp = Vector2D(-rb.y, rb.x);
+
+            Vector2D angularLinearVelocityA = raPerp * bodyA->angularVelocity;
+            Vector2D angularLinearVelocityB = rbPerp * bodyB->angularVelocity;
+
+            Vector2D relativeVelocity = 
+                (bodyB->linearVelocity + angularLinearVelocityB) 
+                - (bodyA->linearVelocity + angularLinearVelocityA);
+
+            float contactVelocityMag = VectorMath::DotProduct(relativeVelocity, normal);
+
+            if (contactVelocityMag > 0) continue;
+
+            float raPerpDot = VectorMath::DotProduct(raPerp, normal);
+            float rbPerpDot = VectorMath::DotProduct(rbPerp, normal);
+
+            float denominator = (bodyA->invMass + bodyB->invMass) +
+                (raPerpDot * raPerpDot) * bodyA->invInertia + 
+                (rbPerpDot * rbPerpDot) * bodyB->invInertia;
+
+            float j = -(1.0f + e) * contactVelocityMag;
+            j /= denominator;
+            j /= float(contactCount);
+
+            Vector2D impulse = j * normal;
+
+            impulseList[i] = impulse;
+            jList[i] = j;
+
+        }
+
+        for (int i = 0; i < contactCount; i++) {
+            Vector2D impulse = impulseList[i];
+            Vector2D ra = raList[i];
+            Vector2D rb = rbList[i];
+
+            bodyA->linearVelocity += -impulse * bodyA->invMass;
+            bodyA->angularVelocity += -VectorMath::CrossProduct(ra, impulse) * bodyA->invInertia;
+            bodyB->linearVelocity += impulse * bodyB->invMass;
+            bodyB->angularVelocity += VectorMath::CrossProduct(rb, impulse) * bodyB->invInertia;
+        }
+
+        for (int i = 0; i < contactCount; i++) {
+            Vector2D ra = contactList[i] - bodyA->position;
+            Vector2D rb = contactList[i] - bodyB->position;
+
+            raList[i] = ra; rbList[i] = rb;
+
+            Vector2D raPerp = Vector2D(-ra.y, ra.x);
+            Vector2D rbPerp = Vector2D(-rb.y, rb.x);
+
+            Vector2D angularLinearVelocityA = raPerp * bodyA->angularVelocity;
+            Vector2D angularLinearVelocityB = rbPerp * bodyB->angularVelocity;
+
+            Vector2D relativeVelocity =
+                (bodyB->linearVelocity + angularLinearVelocityB)
+                - (bodyA->linearVelocity + angularLinearVelocityA);
+
+            Vector2D tangent = relativeVelocity - VectorMath::DotProduct(relativeVelocity, normal) * normal;
+
+            if(VectorMath::NearlyEqualVectors(tangent, Vector2D(0, 0))) continue;
+            else {
+                tangent = VectorMath::Normalize(tangent);
+            }
+
+            float raPerpDot = VectorMath::DotProduct(raPerp, tangent);
+            float rbPerpDot = VectorMath::DotProduct(rbPerp, tangent);
+
+            float denominator = (bodyA->invMass + bodyB->invMass) +
+                (raPerpDot * raPerpDot) * bodyA->invInertia +
+                (rbPerpDot * rbPerpDot) * bodyB->invInertia;
+
+            float jt = -VectorMath::DotProduct(relativeVelocity, tangent);
+            jt /= denominator;
+            jt /= float(contactCount);
+
+            Vector2D frictionImpulse;
+            float j = jList[i];
+
+            if (std::abs(jt) <= j * sf) {
+                frictionImpulse = jt * tangent;
+            }
+            else {
+                frictionImpulse = -j * tangent * df;
+            }
+
+            frictionImpulseList[i] = frictionImpulse;
+        }
+
+        for (int i = 0; i < contactCount; i++) {
+            Vector2D frictionImpulse = frictionImpulseList[i];
+            Vector2D ra = raList[i];
+            Vector2D rb = rbList[i];
+
+            bodyA->linearVelocity += -frictionImpulse * bodyA->invMass;
+            bodyA->angularVelocity += -VectorMath::CrossProduct(ra, frictionImpulse) * bodyA->invInertia;
+            bodyB->linearVelocity += frictionImpulse * bodyB->invMass;
+            bodyB->angularVelocity += VectorMath::CrossProduct(rb, frictionImpulse) * bodyB->invInertia;
+        }
+    }
     
     void World::StepBodies(float delta, int totalIterations)
     {
@@ -190,7 +385,7 @@ namespace PlainPhysics
             FindContactPoints(bodyA, bodyB, contactOne, contactTwo, contactCount);
             Manifold contact(bodyA, bodyB, normal, depth, contactOne, contactTwo, contactCount);
 
-            ResolveCollisionBasic(contact);
+            ResolveCollisionRotationFriction(contact);
         }
     }
 

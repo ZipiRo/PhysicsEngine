@@ -30,6 +30,8 @@ namespace PlainPhysics
         this->mass = isStatic ? 0.0f : this->surface * this->density;
         this->inertia = isStatic ? 0.0f : (1.0f / 2.0f) * this->mass * (this->radius * this->radius);
         this->restitution = restitution;
+        this->staticFriction = 0.6f;
+        this->dinamicFriction = 0.4f;
 
         this->invMass = isStatic ? 0.0f : 1.0f / mass;
         this->invInertia = isStatic ? 0.0f : 1.0f / inertia;

@@ -45,8 +45,10 @@ namespace PlainPhysics
             float restitution;
             float area;
 
-            bool isStatic;
+            float staticFriction;
+            float dinamicFriction;
 
+            bool isStatic;
 
             bool UPDATE_VERTICES;
             bool UPDATE_AABB;

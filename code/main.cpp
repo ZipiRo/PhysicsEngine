@@ -22,9 +22,9 @@ class Game : public Engine
 
         void Create() override 
         {
-            Body *Ground = new Rectangle(75.0f, 6.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 15.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Body *Ground = new Rectangle(75.0f, 6.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 25.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
             world.AddBody(Ground);
-            
+
             Body *Platform_One = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f + 15.0f, this->GetWindowHeigth() / 2 - 15.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
             Platform_One->RotateTo(-25.0f);
             world.AddBody(Platform_One);
@@ -58,11 +58,11 @@ class Game : public Engine
                 currentBody = 2;
                 std::cout << "CREATING CIRCLES" << '\n';
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
-            {
-                currentBody = 3;
-                std::cout << "CREATING REGULATEDPOLYGONS" << '\n';
-            }
+            // if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+            // {
+            //     currentBody = 3;
+            //     std::cout << "CREATING REGULATEDPOLYGONS" << '\n';
+            // }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::B))
             {
                 std::cout << "Bodyes:" << this->world.BodyCount() << '\n';
@@ -112,20 +112,20 @@ class Game : public Engine
                 Body *body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
-            else if(currentBody == 3)
-            {
-                float sides = 3 + rand() % (6 - 10 + 1);
-                float radius = 1 + rand() % (3 - 1 + 1);
+            // else if(currentBody == 3)
+            // {
+            //     float sides = 3 + rand() % (6 - 10 + 1);
+            //     float radius = 1 + rand() % (3 - 1 + 1);
 
-                Body *body = new RegulatedPolygon(sides, radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
-                this->world.AddBody(body);
-            }
+            //     Body *body = new RegulatedPolygon(sides, radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+            //     this->world.AddBody(body);
+            // }
         }
 };
 
 int main()
 {
     Game game;
-    game.Construct(800, 600);
+    game.Construct(1240, 720);
     game.Start();
 }

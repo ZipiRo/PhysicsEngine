@@ -52,7 +52,7 @@ namespace PlainPhysics
         this->linearVelocity += acceleration * delta;
         this->position += this->linearVelocity * delta;
 
-        this->angle += this->angularVelocity * 45.0f * delta;
+        this->angle += this->angularVelocity * (180 / 3.141592f) * delta;
         
         this->force = Vector2D(0, 0);
 

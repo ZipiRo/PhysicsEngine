@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #include "Vector2D.h"
 #include "Transform.h"
@@ -30,8 +29,8 @@ namespace PlainPhysics
             void NarrowPhase();
 
         private:
+            Vector2D gravity;
             std::list<Body *> bodyList;
             std::vector<ContactPair> contactPairs;
-            Vector2D gravity;
     };
 }

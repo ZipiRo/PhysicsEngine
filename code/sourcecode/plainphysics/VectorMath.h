@@ -26,5 +26,4 @@ namespace PlainPhysics
 
         Vector2D VectorTransformZ(Vector2D vector, Transform transform);
     }
-
 }

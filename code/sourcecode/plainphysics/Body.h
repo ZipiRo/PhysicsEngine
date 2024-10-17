@@ -13,16 +13,6 @@ namespace PlainPhysics
     {
         public:
             enum { PolygonShape, CircleShape};
-
-            void Move(Vector2D amount);
-            void MoveTo(Vector2D position);
-            void Rotate(float amount);
-            void RotateTo(float angle);
-            void AddForce(Vector2D amount);
-
-            void SetFillColor(sf::Color color);
-            void SetOutlineColor(sf::Color color);
-            void Step(float delta, int totalIterations);
             
             Vector2D position;
             Vector2D linearVelocity;
@@ -64,5 +54,15 @@ namespace PlainPhysics
 		    virtual void Draw(sf::RenderWindow&) = 0;
             virtual std::vector<Vector2D> GetTransformedVertices() = 0;
             virtual AABB GetAABB() = 0;
+
+            void Move(Vector2D amount);
+            void MoveTo(Vector2D position);
+            void Rotate(float amount);
+            void RotateTo(float angle);
+            void AddForce(Vector2D amount);
+
+            void SetFillColor(sf::Color color);
+            void SetOutlineColor(sf::Color color);
+            void Step(float delta, int totalIterations);
     };
 }

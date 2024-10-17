@@ -5,7 +5,6 @@ namespace PlainEngine
     private:
         int width;
         int height;
-        float timeScale;
         
         sf::RenderWindow *Window;
 
@@ -15,7 +14,7 @@ namespace PlainEngine
         virtual void Update(float) = 0;
         virtual void Draw(sf::RenderWindow& window) = 0;
 
-        void Construct(int width, int heigth);
+        void Construct(int width, int height);
         void Start();
 
         int GetWindowWidth();

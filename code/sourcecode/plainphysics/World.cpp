@@ -363,7 +363,7 @@ namespace PlainPhysics
                 if(bodyA->isStatic && bodyB->isStatic) continue;
                 if(!Collisions::IntersectAABB(bodyA_AABB, bodyB_AABB)) continue;
                 
-                contactPairs.push_back(ContactPair({i, j}));
+                contactPairs.emplace_back(ContactPair{i, j});
             }
         }
     }

@@ -91,7 +91,7 @@ namespace PlainPhysics
         this->rectangleShape.setOrigin(sf::Vector2f(this->width / 2, this->height / 2));
         this->rectangleShape.setFillColor(this->fillColor);
         this->rectangleShape.setOutlineColor(this->outlineColor);
-        this->rectangleShape.setOutlineThickness(1);
+        this->rectangleShape.setOutlineThickness(0.1f);
         this->shape = &this->rectangleShape;
 
         this->UPDATE_VERTICES = true;

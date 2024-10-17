@@ -4,15 +4,17 @@
 using namespace PlainEngine;
 using namespace PlainPhysics;
 
+const float pixelsPerMeter = 10.0f;
+
 class Game : public Engine
 {
     public:
         Game()
         {
             w_Name = "PhysicsEngine v1.0";
-            w_BackgroundColor = sf::Color(30.0f, 129.0f, 176.0f);
-            viewZoomFactor = 0.1f;
-            maxFps = 9999.0f;
+            w_BackgroundColor = sf::Color::Black;
+            viewZoomFactor = 1.0f / pixelsPerMeter;
+            maxFps = 60.9f;
         }
     
     private:
@@ -22,15 +24,15 @@ class Game : public Engine
 
         void Create() override 
         {
-            Body *Ground = new Rectangle(75.0f, 6.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 25.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
+            Body *Ground = new Rectangle(80.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f, this->GetWindowHeigth() / 2 + 20.0f), 1.0f, 0.5f, sf::Color::White, sf::Color::Transparent, true);
             world.AddBody(Ground);
 
-            Body *Platform_One = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f + 15.0f, this->GetWindowHeigth() / 2 - 15.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
-            Platform_One->RotateTo(-25.0f);
+            Body *Platform_One = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f - 18.0f, this->GetWindowHeigth() / 2 - 10.0f), 1.0f, 0.5f, sf::Color::White, sf::Color::Transparent, true);
+            Platform_One->RotateTo(25.0f);
             world.AddBody(Platform_One);
             
-            Body *Platform_Two = new Rectangle(35.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f - 15.0f, this->GetWindowHeigth() / 2 - 5.0f), 1.0f, 0.5f, sf::Color(71.0f, 135.0f, 70.0f), sf::Color::Transparent, true);
-            Platform_Two->RotateTo(25.0f);
+            Body *Platform_Two = new Rectangle(40.0f, 3.0f, Vector2D(this->GetWindowWidth() / 2.0f + 40.0f, this->GetWindowHeigth() / 2), 1.0f, 0.5f, sf::Color::White, sf::Color::Transparent, true);
+            Platform_Two->RotateTo(90.0f);
             world.AddBody(Platform_Two);
         }
 
@@ -92,24 +94,26 @@ class Game : public Engine
         }
 
         void CreateBody()
-        {
+        {   
+            Body *body;
+
             int r = 0 + rand() % (255 - 0 + 1);
             int g = 0 + rand() % (255 - 0 + 1);
             int b = 0 + rand() % (255 - 0 + 1);
 
             if(currentBody == 1)
             {
-                float width = 1 + rand() % (3 - 1 + 1);
-                float height = 1 + rand() % (3 - 1 + 1);
+                float width = 3 + rand() % (5 - 3 + 1);
+                float height = 3 + rand() % (5 - 3 + 1);
 
-                Body *body = new Rectangle(width, height, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+                body = new Rectangle(width, height, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
             else if(currentBody == 2)
             {
-                float radius = 1 + rand() % (3 - 1 + 1);
+                float radius = 2 + rand() % (3 - 2 + 1);
 
-                Body *body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
+                body = new Circle(radius, VectorMath::sfmlVector2DtoVector2D(this->mouseWorldPos), 1.0f, 0.5f, sf::Color(r, g, b), sf::Color::Transparent, false);
                 this->world.AddBody(body);
             }
             // else if(currentBody == 3)
@@ -126,6 +130,6 @@ class Game : public Engine
 int main()
 {
     Game game;
-    game.Construct(1240, 720);
+    game.Construct(1280, 720);
     game.Start();
 }

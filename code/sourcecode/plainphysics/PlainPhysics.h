@@ -8,6 +8,5 @@
 #include "Manifold.h"
 #include "Circle.h"
 #include "Rectangle.h"
-#include "RegulatedPolygon.h"
 #include "Collisions.h"
 #include "World.h"

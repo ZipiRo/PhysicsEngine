@@ -49,8 +49,7 @@ namespace PlainPhysics
         this->circleShape.setOrigin(sf::Vector2f(this->radius, this->radius));
         this->circleShape.setFillColor(this->fillColor);
         this->circleShape.setOutlineColor(this->outlineColor);
-        this->circleShape.setOutlineThickness(1);
-
+        this->circleShape.setOutlineThickness(0.1f);
         this->shape = &this->circleShape;
     }
 

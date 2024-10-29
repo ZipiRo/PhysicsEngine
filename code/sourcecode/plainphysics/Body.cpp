@@ -29,7 +29,7 @@ namespace PlainPhysics
     }
 
     void Body::AddForce(Vector2D amount) {
-        this->force = amount;
+        this->force += amount;
     }
 
     void Body::SetFillColor(sf::Color color) {

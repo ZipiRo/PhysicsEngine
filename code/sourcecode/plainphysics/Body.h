@@ -51,7 +51,7 @@ namespace PlainPhysics
 
             Body();
             
-		    virtual void Draw(sf::RenderWindow&) = 0;
+		    virtual void Draw(sf::RenderWindow* window) = 0;
             virtual std::vector<Vector2D> GetTransformedVertices() = 0;
             virtual AABB GetAABB() = 0;
 

@@ -53,7 +53,7 @@ namespace PlainPhysics
         this->shape = &this->circleShape;
     }
 
-    void Circle::Draw(sf::RenderWindow& window)
+    void Circle::Draw(sf::RenderWindow* window)
     {
         if(this->UPDATE_AABB)
             this->aabb = UpdateCircleAABB(this->position, this->radius);
@@ -61,7 +61,7 @@ namespace PlainPhysics
         this->circleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->circleShape.setRotation(this->angle);
 
-        window.draw(this->circleShape);
+        window->draw(this->circleShape);
     }
 
     std::vector<Vector2D> Circle::GetTransformedVertices()

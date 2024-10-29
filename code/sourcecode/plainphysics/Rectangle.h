@@ -17,7 +17,7 @@ namespace PlainPhysics
         public:
             Rectangle (float width, float height, Vector2D position, float density, float restitution, sf::Color fillColor, sf::Color outlineColor, bool isStatic);
             
-            void Draw(sf::RenderWindow& window) override;
+            void Draw(sf::RenderWindow* window) override;
             std::vector<Vector2D> GetTransformedVertices() override;
             AABB GetAABB() override;
 

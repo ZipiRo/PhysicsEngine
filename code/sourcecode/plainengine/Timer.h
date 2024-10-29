@@ -4,26 +4,18 @@ namespace EngineUtils
 {
     class Timer
     {
-    public:
+    private:
+        std::chrono::system_clock::time_point mStartTime;
+        std::chrono::duration<float> mDeltaTime;
+        float mTimeScale;
 
-        static Timer* Instance();
-        static void Relese();
+    public:
+        Timer();
+        Timer(float timeScale);
         void Reset();
         float DeltaTime();
         void TimeScale(float t);
         float TimeScale();  
         void Tick();
-
-    private:
-        Timer();
-        ~Timer();
-
-    private:
-
-        static Timer* sInstance;
-
-        std::chrono::system_clock::time_point mStartTime;
-        std::chrono::duration<float> mDeltaTime;
-        float mTimeScale;
     };
 }

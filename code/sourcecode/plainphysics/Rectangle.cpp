@@ -98,7 +98,7 @@ namespace PlainPhysics
         this->UPDATE_AABB = true;
     }
 
-    void Rectangle::Draw(sf::RenderWindow& window)
+    void Rectangle::Draw(sf::RenderWindow* window)
     {   
         if(this->UPDATE_VERTICES)
             this->transformVertices = UpdateRectangleVertices(this->vertices, this->position, this->angle);
@@ -109,7 +109,7 @@ namespace PlainPhysics
         this->rectangleShape.setPosition(VectorMath::Vector2DtosfmlVector2D(this->position));
         this->rectangleShape.setRotation(this->angle);
 
-        window.draw(this->rectangleShape);
+        window->draw(this->rectangleShape);
 
         this->UPDATE_VERTICES = false;
     }
